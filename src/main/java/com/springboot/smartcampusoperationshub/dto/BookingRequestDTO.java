@@ -1,43 +1,13 @@
-package com.springboot.smartcampusoperationshub.model;
-
-import jakarta.persistence.*;
+package com.springboot.smartcampusoperationshub.dto;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "bookings")
-public class Booking {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    private Long userId;
+public class BookingRequestDTO {
     private Long resourceId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String purpose;
     private Integer attendees;
-
-    @Enumerated(EnumType.STRING)
-    private BookingStatus status = BookingStatus.PENDING;
-
-    private String adminReason;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public Long getResourceId() {
         return resourceId;
@@ -78,21 +48,5 @@ public class Booking {
     public void setAttendees(Integer attendees) {
         this.attendees = attendees;
     }
-
-    public BookingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatus status) {
-        this.status = status;
-    }
-
-    public String getAdminReason() {
-        return adminReason;
-    }
-
-    public void setAdminReason(String adminReason) {
-        this.adminReason = adminReason;
-    }
-
 }
+
