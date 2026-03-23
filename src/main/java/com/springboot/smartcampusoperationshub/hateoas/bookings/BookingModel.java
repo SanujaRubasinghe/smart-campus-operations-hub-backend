@@ -1,4 +1,4 @@
-package com.springboot.smartcampusoperationshub.hateoas;
+package com.springboot.smartcampusoperationshub.hateoas.bookings;
 
 import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
 import org.springframework.hateoas.RepresentationModel;

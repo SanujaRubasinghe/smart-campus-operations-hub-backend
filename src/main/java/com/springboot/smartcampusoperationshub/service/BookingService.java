@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.service;
 
-import com.springboot.smartcampusoperationshub.dto.BookingRequestDTO;
+import com.springboot.smartcampusoperationshub.dto.bookings.BookingRequestDTO;
 import com.springboot.smartcampusoperationshub.exception.BookingConflictException;
 import com.springboot.smartcampusoperationshub.model.bookings.Booking;
 import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
