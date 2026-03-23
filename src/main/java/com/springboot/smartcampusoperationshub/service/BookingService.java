@@ -4,7 +4,7 @@ import com.springboot.smartcampusoperationshub.dto.bookings.BookingRequestDTO;
 import com.springboot.smartcampusoperationshub.exception.BookingConflictException;
 import com.springboot.smartcampusoperationshub.model.bookings.Booking;
 import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
-import com.springboot.smartcampusoperationshub.repository.BookingRepository;
+import com.springboot.smartcampusoperationshub.repository.bookings.BookingRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
