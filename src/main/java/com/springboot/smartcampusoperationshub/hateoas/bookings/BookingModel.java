@@ -9,8 +9,12 @@ import java.time.LocalTime;
 
 public class BookingModel extends RepresentationModel<BookingModel> {
     private Long id;
+    private Long resourceId;
     private String resourceName;
+    private String resourceType;
+    private Long userId;
     private String bookedByUsername;
+    private String bookedByFullName;
     private LocalDate bookingDate;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -18,8 +22,11 @@ public class BookingModel extends RepresentationModel<BookingModel> {
     private Integer expectedAttendees;
     private BookingStatus status;
     private String adminNote;
+    private String reviewedByUsername;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public BookingModel() {}
 
     public Long getId() {
         return id;
@@ -27,6 +34,14 @@ public class BookingModel extends RepresentationModel<BookingModel> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(Long resourceId) {
+        this.resourceId = resourceId;
     }
 
     public String getResourceName() {
@@ -37,12 +52,36 @@ public class BookingModel extends RepresentationModel<BookingModel> {
         this.resourceName = resourceName;
     }
 
+    public String getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public String getBookedByUsername() {
         return bookedByUsername;
     }
 
     public void setBookedByUsername(String bookedByUsername) {
         this.bookedByUsername = bookedByUsername;
+    }
+
+    public String getBookedByFullName() {
+        return bookedByFullName;
+    }
+
+    public void setBookedByFullName(String bookedByFullName) {
+        this.bookedByFullName = bookedByFullName;
     }
 
     public LocalDate getBookingDate() {
@@ -99,6 +138,14 @@ public class BookingModel extends RepresentationModel<BookingModel> {
 
     public void setAdminNote(String adminNote) {
         this.adminNote = adminNote;
+    }
+
+    public String getReviewedByUsername() {
+        return reviewedByUsername;
+    }
+
+    public void setReviewedByUsername(String reviewedByUsername) {
+        this.reviewedByUsername = reviewedByUsername;
     }
 
     public LocalDateTime getCreatedAt() {
