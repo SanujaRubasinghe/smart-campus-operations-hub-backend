@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.hateoas;
 
-import com.springboot.smartcampusoperationshub.model.Booking;
+import com.springboot.smartcampusoperationshub.model.bookings.Booking;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 

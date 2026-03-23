@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.repository;
 
-import com.springboot.smartcampusoperationshub.model.Booking;
+import com.springboot.smartcampusoperationshub.model.bookings.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

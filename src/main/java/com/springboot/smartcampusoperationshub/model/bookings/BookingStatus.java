@@ -1,4 +1,4 @@
-package com.springboot.smartcampusoperationshub.model;
+package com.springboot.smartcampusoperationshub.model.bookings;
 
 public enum BookingStatus {
     PENDING,
