@@ -1,5 +1,6 @@
-package com.smartcampus.smart_campus_backend.model;
+package com.smart_campus.smart_campus_backend.model;
 
+import com.smart_campus.smart_campus_backend.model.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

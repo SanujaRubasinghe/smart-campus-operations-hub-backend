@@ -1,8 +1,8 @@
 package com.smart_campus.smart_campus_backend.security;
 
-import com.smartcampus.smart_campus_backend.model.AuthProvider;
-import com.smartcampus.smart_campus_backend.model.User;
-import com.smartcampus.smart_campus_backend.repository.UserRepository;
+import com.smart_campus.smart_campus_backend.model.AuthProvider;
+import com.smart_campus.smart_campus_backend.model.User;
+import com.smart_campus.smart_campus_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;

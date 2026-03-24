@@ -1,9 +1,9 @@
 package com.smart_campus.smart_campus_backend.controller;
 
-import com.smartcampus.smart_campus_backend.dto.NotificationModel;
-import com.smartcampus.smart_campus_backend.model.Notification;
-import com.smartcampus.smart_campus_backend.security.UserPrincipal;
-import com.smartcampus.smart_campus_backend.service.NotificationService;
+import com.smart_campus.smart_campus_backend.dto.NotificationModel;
+import com.smart_campus.smart_campus_backend.model.Notification;
+import com.smart_campus.smart_campus_backend.security.UserPrincipal;
+import com.smart_campus.smart_campus_backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,12 +1,8 @@
 package com.smart_campus.smart_campus_backend.service;
 
-import com.smart_campus.smart_campus_backend.dto.SessionResponse;
-import com.smart_campus.smart_campus_backend.dto.UpdateProfileRequest;
-import com.smart_campus.smart_campus_backend.dto.UserProfileResponse;
-import com.smart_campus.smart_campus_backend.exception.ResourceNotFoundException;
-import com.smart_campus.smart_campus_backend.exception.UnauthorizedException;
-import com.smart_campus.smart_campus_backend.model.User;
-import com.smart_campus.smart_campus_backend.model.UserSession;
+import com.smart_campus.smart_campus_backend.dto.*;
+import com.smart_campus.smart_campus_backend.exception.*;
+import com.smart_campus.smart_campus_backend.model.*;
 import com.smart_campus.smart_campus_backend.repository.UserRepository;
 import com.smart_campus.smart_campus_backend.repository.UserSessionRepository;
 import com.smart_campus.smart_campus_backend.security.UserPrincipal;
@@ -15,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +25,23 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserSessionRepository sessionRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public User registerUser(RegisterRequest registerRequest) {
+        if (userRepository.existsByEmail(registerRequest.getEmail())) {
+            throw new BadRequestException("Email address already in use.");
+        }
+
+        User user = new User();
+        user.setName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setProvider(AuthProvider.local);
+        user.setRole(Role.USER);
+
+        return userRepository.save(user);
+    }
 
     @Override
     @Transactional

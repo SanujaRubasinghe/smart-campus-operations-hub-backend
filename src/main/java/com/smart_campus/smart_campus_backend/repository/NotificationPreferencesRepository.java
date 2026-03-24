@@ -1,7 +1,7 @@
 package com.smart_campus.smart_campus_backend.repository;
 
-import com.smartcampus.smart_campus_backend.model.NotificationPreferences;
-import com.smartcampus.smart_campus_backend.model.User;
+import com.smart_campus.smart_campus_backend.model.NotificationPreferences;
+import com.smart_campus.smart_campus_backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

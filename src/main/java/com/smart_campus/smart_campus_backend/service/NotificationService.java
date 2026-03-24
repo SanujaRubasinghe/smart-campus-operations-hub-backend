@@ -1,9 +1,9 @@
 package com.smart_campus.smart_campus_backend.service;
 
-import com.smartcampus.smart_campus_backend.model.Notification;
-import com.smartcampus.smart_campus_backend.repository.NotificationPreferencesRepository;
-import com.smartcampus.smart_campus_backend.repository.NotificationRepository;
-import com.smartcampus.smart_campus_backend.repository.UserRepository;
+import com.smart_campus.smart_campus_backend.model.Notification;
+import com.smart_campus.smart_campus_backend.repository.NotificationPreferencesRepository;
+import com.smart_campus.smart_campus_backend.repository.NotificationRepository;
+import com.smart_campus.smart_campus_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

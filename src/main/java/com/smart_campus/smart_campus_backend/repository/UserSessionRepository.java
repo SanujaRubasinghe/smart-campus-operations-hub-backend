@@ -1,7 +1,7 @@
 package com.smart_campus.smart_campus_backend.repository;
 
-import com.smartcampus.smart_campus_backend.model.User;
-import com.smartcampus.smart_campus_backend.model.UserSession;
+import com.smart_campus.smart_campus_backend.model.User;
+import com.smart_campus.smart_campus_backend.model.UserSession;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

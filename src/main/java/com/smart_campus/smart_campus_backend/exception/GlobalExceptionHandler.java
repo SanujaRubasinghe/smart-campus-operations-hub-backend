@@ -1,6 +1,6 @@
 package com.smart_campus.smart_campus_backend.exception;
 
-import com.smartcampus.smart_campus_backend.dto.ApiResponse;
+import com.smart_campus.smart_campus_backend.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

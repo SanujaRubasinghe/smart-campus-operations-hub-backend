@@ -1,7 +1,7 @@
 package com.smart_campus.smart_campus_backend.controller;
 
-import com.smartcampus.smart_campus_backend.dto.UserModel;
-import com.smartcampus.smart_campus_backend.model.User;
+import com.smart_campus.smart_campus_backend.dto.UserModel;
+import com.smart_campus.smart_campus_backend.model.User;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
