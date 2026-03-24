@@ -1,12 +1,15 @@
 package com.smart_campus.smart_campus_backend.service;
 
-import com.smartcampus.smart_campus_backend.dto.*;
-import com.smartcampus.smart_campus_backend.exception.*;
-import com.smartcampus.smart_campus_backend.model.User;
-import com.smartcampus.smart_campus_backend.model.UserSession;
-import com.smartcampus.smart_campus_backend.repository.UserRepository;
-import com.smartcampus.smart_campus_backend.repository.UserSessionRepository;
-import com.smartcampus.smart_campus_backend.security.UserPrincipal;
+import com.smart_campus.smart_campus_backend.dto.SessionResponse;
+import com.smart_campus.smart_campus_backend.dto.UpdateProfileRequest;
+import com.smart_campus.smart_campus_backend.dto.UserProfileResponse;
+import com.smart_campus.smart_campus_backend.exception.ResourceNotFoundException;
+import com.smart_campus.smart_campus_backend.exception.UnauthorizedException;
+import com.smart_campus.smart_campus_backend.model.User;
+import com.smart_campus.smart_campus_backend.model.UserSession;
+import com.smart_campus.smart_campus_backend.repository.UserRepository;
+import com.smart_campus.smart_campus_backend.repository.UserSessionRepository;
+import com.smart_campus.smart_campus_backend.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
