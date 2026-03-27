@@ -58,6 +58,9 @@ public class Resource {
     @Column(nullable = false)
     private ResourceStatus status = ResourceStatus.ACTIVE;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // Constructors
     public Resource() {}
 
@@ -93,4 +96,7 @@ public class Resource {
     
     public ResourceStatus getStatus() { return status; }
     public void setStatus(ResourceStatus status) { this.status = status; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

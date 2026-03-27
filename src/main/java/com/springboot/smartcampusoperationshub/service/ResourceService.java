@@ -15,6 +15,13 @@ import com.springboot.smartcampusoperationshub.repository.ResourceSpecification;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.UUID;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.StringUtils;
 
 @Service
 public class ResourceService {
@@ -66,5 +73,36 @@ public class ResourceService {
     public void deleteResource(UUID id) {
         Resource existing = getResourceById(id);
         resourceRepository.delete(existing);
+    }
+
+    @Transactional
+    public Resource uploadImage(UUID id, MultipartFile file) {
+        Resource existing = getResourceById(id);
+        
+        try {
+            String uploadDir = "uploads/";
+            Path uploadPath = Paths.get(uploadDir);
+            
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            
+            String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String extension = "";
+            int i = originalFileName.lastIndexOf('.');
+            if (i > 0) {
+                extension = originalFileName.substring(i);
+            }
+            
+            String storedFileName = UUID.randomUUID().toString() + extension;
+            Path filePath = uploadPath.resolve(storedFileName);
+            
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            
+            existing.setImageUrl("/images/" + storedFileName);
+            return resourceRepository.save(existing);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not store the file. Error: " + e.getMessage(), e);
+        }
     }
 }

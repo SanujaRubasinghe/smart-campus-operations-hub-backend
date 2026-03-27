@@ -16,6 +16,8 @@ import com.springboot.smartcampusoperationshub.model.enums.ResourceType;
 import jakarta.validation.Valid;
 
 import java.util.UUID;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Exposes RESTful endpoints for managing campus resources.
@@ -78,5 +80,15 @@ public class ResourceController {
     public ResponseEntity<List<Resource>> getRecommendations(@RequestBody RecommendationRequest request) {
         List<Resource> recommendations = recommendationService.getRecommendations(request.getIntent());
         return ResponseEntity.ok(recommendations);
+    }
+    /**
+     * Endpoint for uploading an image for a specific resource.
+     */
+    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Resource> uploadResourceImage(
+            @PathVariable UUID id, 
+            @RequestParam("file") MultipartFile file) {
+        Resource updatedResource = resourceService.uploadImage(id, file);
+        return ResponseEntity.ok(updatedResource);
     }
 }
