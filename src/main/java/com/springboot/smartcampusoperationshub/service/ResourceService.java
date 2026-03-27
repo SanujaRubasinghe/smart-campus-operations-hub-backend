@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import com.springboot.smartcampusoperationshub.model.enums.ResourceType;
+import com.springboot.smartcampusoperationshub.repository.ResourceSpecification;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.UUID;
 
 @Service
@@ -27,9 +31,9 @@ public class ResourceService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Resource> getAllResources(Pageable pageable) {
-        // Future iteration: Implement JpaSpecificationExecutor logic here for dynamic filtering
-        return resourceRepository.findAll(pageable);
+    public Page<Resource> getAllResources(ResourceType type, Integer minCapacity, String location, Pageable pageable) {
+        Specification<Resource> spec = ResourceSpecification.getFilteredResources(type, minCapacity, location);
+        return resourceRepository.findAll(spec, pageable);
     }
 
     @Transactional(readOnly = true)

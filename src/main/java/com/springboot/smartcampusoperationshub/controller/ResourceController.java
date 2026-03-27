@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import com.springboot.smartcampusoperationshub.model.enums.ResourceType;
+import jakarta.validation.Valid;
+
 import java.util.UUID;
 
 /**
@@ -30,16 +33,19 @@ public class ResourceController {
     }
 
     @PostMapping
-    public ResponseEntity<Resource> createResource(@RequestBody Resource resource) {
+    public ResponseEntity<Resource> createResource(@Valid @RequestBody Resource resource) {
         Resource savedResource = resourceService.createResource(resource);
         return new ResponseEntity<>(savedResource, HttpStatus.CREATED); // 201 Created
     }
 
     @GetMapping
     public ResponseEntity<Page<Resource>> getAllResources(
+            @RequestParam(required = false) ResourceType type,
+            @RequestParam(required = false) Integer minCapacity,
+            @RequestParam(required = false) String location,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Page<Resource> resources = resourceService.getAllResources(PageRequest.of(page, size));
+        Page<Resource> resources = resourceService.getAllResources(type, minCapacity, location, PageRequest.of(page, size));
         return ResponseEntity.ok(resources); // 200 OK
     }
 
