@@ -2,12 +2,15 @@ package com.springboot.smartcampusoperationshub.controller;
 
 import com.springboot.smartcampusoperationshub.model.Resource;
 import com.springboot.smartcampusoperationshub.service.ResourceService;
+import com.springboot.smartcampusoperationshub.service.RecommendationService;
+import com.springboot.smartcampusoperationshub.dto.RecommendationRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,9 +22,11 @@ import java.util.UUID;
 public class ResourceController {
 
     private final ResourceService resourceService;
+    private final RecommendationService recommendationService;
 
-    public ResourceController(ResourceService resourceService) {
+    public ResourceController(ResourceService resourceService, RecommendationService recommendationService) {
         this.resourceService = resourceService;
+        this.recommendationService = recommendationService;
     }
 
     @PostMapping
@@ -57,5 +62,14 @@ public class ResourceController {
     public ResponseEntity<Void> deleteResource(@PathVariable UUID id) {
         resourceService.deleteResource(id);
         return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    /**
+     * Innovation Feature: AI-Driven Resource Recommendation
+     */
+    @PostMapping("/recommendations")
+    public ResponseEntity<List<Resource>> getRecommendations(@RequestBody RecommendationRequest request) {
+        List<Resource> recommendations = recommendationService.getRecommendations(request.getIntent());
+        return ResponseEntity.ok(recommendations);
     }
 }
