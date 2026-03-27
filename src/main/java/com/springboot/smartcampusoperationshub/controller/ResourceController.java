@@ -40,12 +40,13 @@ public class ResourceController {
 
     @GetMapping
     public ResponseEntity<Page<Resource>> getAllResources(
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) ResourceType type,
             @RequestParam(required = false) Integer minCapacity,
             @RequestParam(required = false) String location,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Page<Resource> resources = resourceService.getAllResources(type, minCapacity, location, PageRequest.of(page, size));
+        Page<Resource> resources = resourceService.getAllResources(name, type, minCapacity, location, PageRequest.of(page, size));
         return ResponseEntity.ok(resources); // 200 OK
     }
 

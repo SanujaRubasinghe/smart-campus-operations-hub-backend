@@ -9,9 +9,13 @@ import java.util.List;
 
 public class ResourceSpecification {
 
-    public static Specification<Resource> getFilteredResources(ResourceType type, Integer minCapacity, String location) {
+    public static Specification<Resource> getFilteredResources(String name, ResourceType type, Integer minCapacity, String location) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            if (name != null && !name.trim().isEmpty()) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+            }
 
             if (type != null) {
                 predicates.add(criteriaBuilder.equal(root.get("type"), type));

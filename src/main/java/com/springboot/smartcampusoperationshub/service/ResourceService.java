@@ -31,8 +31,8 @@ public class ResourceService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Resource> getAllResources(ResourceType type, Integer minCapacity, String location, Pageable pageable) {
-        Specification<Resource> spec = ResourceSpecification.getFilteredResources(type, minCapacity, location);
+    public Page<Resource> getAllResources(String name, ResourceType type, Integer minCapacity, String location, Pageable pageable) {
+        Specification<Resource> spec = ResourceSpecification.getFilteredResources(name, type, minCapacity, location);
         return resourceRepository.findAll(spec, pageable);
     }
 
