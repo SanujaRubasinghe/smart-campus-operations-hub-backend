@@ -1,7 +1,7 @@
 package com.springboot.smartcampusoperationshub.repository.bookings;
 
-import com.springboot.smartcampusoperationshub.model.bookings.Booking;
-import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
+import com.springboot.smartcampusoperationshub.model.Booking;
+import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
