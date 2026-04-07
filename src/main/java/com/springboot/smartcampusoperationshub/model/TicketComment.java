@@ -1,11 +1,14 @@
 package com.springboot.smartcampusoperationshub.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ticket_comments")
 public class TicketComment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +22,7 @@ public class TicketComment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private IncidentTicket ticket;
@@ -80,5 +84,4 @@ public class TicketComment {
     public void setTicket(IncidentTicket ticket) {
         this.ticket = ticket;
     }
-
 }
