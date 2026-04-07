@@ -2,12 +2,8 @@ package com.springboot.smartcampusoperationshub.hateoas.bookings;
 
 import com.springboot.smartcampusoperationshub.controller.BookingController;
 import com.springboot.smartcampusoperationshub.model.bookings.Booking;
-import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class BookingModelAssembler
@@ -43,31 +39,31 @@ public class BookingModelAssembler
         }
 
         // Self link - always present in the response
-        model.add(linkTo(methodOn(BookingController.class)
-                .getBookingById(booking.getId()))
-                .withSelfRel());
-
-        // PENDING - the booking can be approved or rejected
-        if (booking.getStatus() == BookingStatus.PENDING) {
-            model.add(linkTo(methodOn(BookingController.class)
-                    .approveBooking(booking.getId(), null))
-                    .withRel("approve"));
-
-            model.add(linkTo(methodOn(BookingController.class)
-                    .rejectBooking(booking.getId(), null))
-                    .withRel("reject"));
-        }
-
-        // APPROVED - approved bookings can be cancelled
-        if (booking.getStatus() == BookingStatus.APPROVED) {
-            model.add(linkTo(methodOn(BookingController.class)
-                    .cancelBooking(booking.getId()))
-                    .withRel("cancel"));
-        }
-
-        model.add(linkTo(methodOn(BookingController.class)
-                .getAllBookings(null, null, null, null, null))
-                .withRel("all-bookings"));
+//        model.add(linkTo(methodOn(BookingController.class)
+//                .getBookingById(booking.getId()))
+//                .withSelfRel());
+//
+//        // PENDING - the booking can be approved or rejected
+//        if (booking.getStatus() == BookingStatus.PENDING) {
+//            model.add(linkTo(methodOn(BookingController.class)
+//                    .approveBooking(booking.getId(), null))
+//                    .withRel("approve"));
+//
+//            model.add(linkTo(methodOn(BookingController.class)
+//                    .rejectBooking(booking.getId(), null))
+//                    .withRel("reject"));
+//        }
+//
+//        // APPROVED - approved bookings can be cancelled
+//        if (booking.getStatus() == BookingStatus.APPROVED) {
+//            model.add(linkTo(methodOn(BookingController.class)
+//                    .cancelBooking(booking.getId()))
+//                    .withRel("cancel"));
+//        }
+//
+//        model.add(linkTo(methodOn(BookingController.class)
+//                .getAllBookings(null, null, null, null, null))
+//                .withRel("all-bookings"));
 
         return model;
     }

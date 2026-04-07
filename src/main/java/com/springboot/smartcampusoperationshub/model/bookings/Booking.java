@@ -1,5 +1,6 @@
 package com.springboot.smartcampusoperationshub.model.bookings;
 
+import com.springboot.smartcampusoperationshub.model.Resource;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

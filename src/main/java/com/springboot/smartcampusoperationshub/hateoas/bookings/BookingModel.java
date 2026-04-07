@@ -1,7 +1,7 @@
 package com.springboot.smartcampusoperationshub.hateoas.bookings;
 
 import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
-import com.springboot.smartcampusoperationshub.model.bookings.enums.ResourceType;
+import com.springboot.smartcampusoperationshub.model.enums.ResourceType;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDate;
