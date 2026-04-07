@@ -1,61 +1,97 @@
 package com.springboot.smartcampusoperationshub.model.bookings;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.springboot.smartcampusoperationshub.model.bookings.enums.ResourceStatus;
+import com.springboot.smartcampusoperationshub.model.bookings.enums.ResourceType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "resources")
+@Table(name = "resources", indexes = {
+        @Index(name = "idx_resource_search", columnList = "type, location, capacity")
+})
 public class Resource {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
 
-    @Column(nullable = false, unique = true, length = 150)
+    @NotBlank(message = "Resource name is mandatory")
+    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, length = 80)
-    private String type;
+    @NotNull(message = "Resource type must be specified")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ResourceType type;
 
-    @Column(length = 200)
-    private String location;
-
+    @Min(value = 1, message = "Capacity must be at least 1")
     private Integer capacity;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    private String location;
 
+    // Stores amenities as a native JSON structure in the database for advanced querying
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private List<String> amenities = new ArrayList<>();
+
+    // Tracks booking frequency to weight the AI recommendation engine's sorting algorithm
+    @Column(name = "historical_popularity", nullable = false)
+    private Integer historicalPopularity = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ResourceStatus status = ResourceStatus.ACTIVE;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    // Constructors
     public Resource() {}
 
-    public Resource(Long id, String name, String type, String location,
-                    Integer capacity, String description) {
-        this.id = id;
+    public Resource(String name, ResourceType type, Integer capacity, String location, List<String> amenities) {
         this.name = name;
         this.type = type;
-        this.location = location;
         this.capacity = capacity;
-        this.description = description;
+        this.location = location;
+        this.amenities = amenities != null ? amenities : new ArrayList<>();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Getters and Setters
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
-
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public ResourceType getType() { return type; }
+    public void setType(ResourceType type) { this.type = type; }
 
     public Integer getCapacity() { return capacity; }
     public void setCapacity(Integer capacity) { this.capacity = capacity; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public List<String> getAmenities() { return amenities; }
+    public void setAmenities(List<String> amenities) { this.amenities = amenities; }
+
+    public Integer getHistoricalPopularity() { return historicalPopularity; }
+    public void setHistoricalPopularity(Integer historicalPopularity) { this.historicalPopularity = historicalPopularity; }
+
+    public ResourceStatus getStatus() { return status; }
+    public void setStatus(ResourceStatus status) { this.status = status; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

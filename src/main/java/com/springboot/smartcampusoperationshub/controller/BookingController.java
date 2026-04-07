@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.controller;
 
-import com.springboot.smartcampusoperationshub.service.BookingService;
+import com.springboot.smartcampusoperationshub.service.bookings.BookingService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

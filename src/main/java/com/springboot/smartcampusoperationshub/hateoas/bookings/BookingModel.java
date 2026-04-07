@@ -1,17 +1,19 @@
 package com.springboot.smartcampusoperationshub.hateoas.bookings;
 
 import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
+import com.springboot.smartcampusoperationshub.model.bookings.enums.ResourceType;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 public class BookingModel extends RepresentationModel<BookingModel> {
     private Long id;
-    private Long resourceId;
+    private UUID resourceId;
     private String resourceName;
-    private String resourceType;
+    private ResourceType resourceType;
     private Long userId;
     private String bookedByUsername;
     private String bookedByFullName;
@@ -36,11 +38,11 @@ public class BookingModel extends RepresentationModel<BookingModel> {
         this.id = id;
     }
 
-    public Long getResourceId() {
+    public UUID getResourceId() {
         return resourceId;
     }
 
-    public void setResourceId(Long resourceId) {
+    public void setResourceId(UUID resourceId) {
         this.resourceId = resourceId;
     }
 
@@ -52,11 +54,11 @@ public class BookingModel extends RepresentationModel<BookingModel> {
         this.resourceName = resourceName;
     }
 
-    public String getResourceType() {
+    public ResourceType getResourceType() {
         return resourceType;
     }
 
-    public void setResourceType(String resourceType) {
+    public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
     }
 
