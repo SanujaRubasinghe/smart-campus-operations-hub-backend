@@ -4,10 +4,11 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 public class BookingRequestDTO {
     @NotNull(message = "Resource ID is required")
-    private Long ResourceId;
+    private UUID ResourceId;
 
     @NotNull(message = "Booking date is required")
     @FutureOrPresent(message = "Booking date must not be in the past")
@@ -28,11 +29,11 @@ public class BookingRequestDTO {
 
     public BookingRequestDTO() {}
 
-    public Long getResourceId() {
+    public UUID getResourceId() {
         return ResourceId;
     }
 
-    public void setResourceId(Long resourceId) {
+    public void setResourceId(UUID resourceId) {
         ResourceId = resourceId;
     }
 

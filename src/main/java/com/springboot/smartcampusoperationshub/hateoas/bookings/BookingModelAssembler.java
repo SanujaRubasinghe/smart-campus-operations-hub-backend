@@ -1,7 +1,7 @@
 package com.springboot.smartcampusoperationshub.hateoas.bookings;
 
 import com.springboot.smartcampusoperationshub.controller.BookingController;
-import com.springboot.smartcampusoperationshub.model.bookings.Booking;
+import com.springboot.smartcampusoperationshub.model.Booking;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +22,7 @@ public class BookingModelAssembler
         model.setResourceName(booking.getResource().getName());
         model.setResourceType(booking.getResource().getType());
         model.setUserId(booking.getUser().getId());
-        model.setBookedByUsername(booking.getUser().getUsername());
-        model.setBookedByFullName(booking.getUser().getFullName());
+        model.setBookedByUsername(booking.getUser().getName());
         model.setBookingDate(booking.getBookingDate());
         model.setStartTime(booking.getStartTime());
         model.setEndTime(booking.getEndTime());
@@ -35,7 +34,7 @@ public class BookingModelAssembler
         model.setUpdatedAt(booking.getUpdatedAt());
 
         if (booking.getReviewedBy() != null) {
-            model.setReviewedByUsername(booking.getReviewedBy().getUsername());
+            model.setReviewedByUsername(booking.getReviewedBy().getName());
         }
 
         // Self link - always present in the response

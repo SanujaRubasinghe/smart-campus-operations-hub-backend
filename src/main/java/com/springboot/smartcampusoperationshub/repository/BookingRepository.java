@@ -1,6 +1,7 @@
-package com.springboot.smartcampusoperationshub.repository.bookings;
+package com.springboot.smartcampusoperationshub.repository;
 
 import com.springboot.smartcampusoperationshub.model.Booking;
+import com.springboot.smartcampusoperationshub.model.User;
 import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -22,7 +24,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND b.startTime < :endTime AND b.endTime > :startTime " +
             "AND (:excludeId IS NULL OR b.id <> :excludeId)"
     )
-    long countConflict(@Param("resourceId") Long resourceId,
+    long countConflicts(@Param("resourceId") UUID resourceId,
                        @Param("bookingDate")LocalDate bookingDate,
                        @Param("startTime")LocalTime startTime,
                        @Param("endTime")LocalTime endTime,
@@ -39,8 +41,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND (:bookingDate IS NULL OR b.bookingDate = :bookingDate)"
     )
     Page<Booking> findAllWithFilters(@Param("status")BookingStatus status,
-                                     @Param("resourceId")Long resourceId,
+                                     @Param("resourceId") UUID resourceId,
                                      @Param("userId")Long userId,
                                      @Param("bookingDate")LocalDate bookingDate,
                                      Pageable pageable);
+
+    Long user(User user);
 }

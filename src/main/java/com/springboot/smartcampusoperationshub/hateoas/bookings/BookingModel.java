@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.hateoas.bookings;
 
-import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
+import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
 import com.springboot.smartcampusoperationshub.model.enums.ResourceType;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -16,7 +16,6 @@ public class BookingModel extends RepresentationModel<BookingModel> {
     private ResourceType resourceType;
     private Long userId;
     private String bookedByUsername;
-    private String bookedByFullName;
     private LocalDate bookingDate;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -76,14 +75,6 @@ public class BookingModel extends RepresentationModel<BookingModel> {
 
     public void setBookedByUsername(String bookedByUsername) {
         this.bookedByUsername = bookedByUsername;
-    }
-
-    public String getBookedByFullName() {
-        return bookedByFullName;
-    }
-
-    public void setBookedByFullName(String bookedByFullName) {
-        this.bookedByFullName = bookedByFullName;
     }
 
     public LocalDate getBookingDate() {

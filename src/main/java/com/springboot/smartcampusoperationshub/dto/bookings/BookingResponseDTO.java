@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.dto.bookings;
 
-import com.springboot.smartcampusoperationshub.model.bookings.BookingStatus;
+import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
