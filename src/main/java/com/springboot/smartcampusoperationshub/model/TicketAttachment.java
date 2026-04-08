@@ -1,30 +1,40 @@
 package com.springboot.smartcampusoperationshub.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ticket_attachments")
 public class TicketAttachment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String fileName;
+
+    @Column(nullable = false)
     private String fileType;
+
+    @Column(nullable = false, length = 1000)
     private String filePath;
+
     private LocalDateTime uploadedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "ticket_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id", nullable = false)
+    @JsonBackReference
     private IncidentTicket ticket;
 
-    public TicketAttachment() {
+    @PrePersist
+    public void prePersist() {
+        this.uploadedAt = LocalDateTime.now();
     }
 
-    @PrePersist
-    public void onUpload() {
-        uploadedAt = LocalDateTime.now();
+    public TicketAttachment() {
     }
 
     public Long getId() {
