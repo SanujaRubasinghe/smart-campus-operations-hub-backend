@@ -13,36 +13,48 @@ public class TicketComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String commenterName;
-    private String commenterRole;
-
     @Column(nullable = false, length = 1000)
     private String commentText;
+
+    @Column(nullable = false)
+    private String commenterName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole commenterRole;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id", nullable = false)
     @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "ticket_id")
     private IncidentTicket ticket;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     public TicketComment() {
     }
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public String getCommentText() {
+        return commentText;
+    }
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
     }
 
     public String getCommenterName() {
@@ -53,20 +65,12 @@ public class TicketComment {
         this.commenterName = commenterName;
     }
 
-    public String getCommenterRole() {
+    public UserRole getCommenterRole() {
         return commenterRole;
     }
 
-    public void setCommenterRole(String commenterRole) {
+    public void setCommenterRole(UserRole commenterRole) {
         this.commenterRole = commenterRole;
-    }
-
-    public String getCommentText() {
-        return commentText;
-    }
-
-    public void setCommentText(String commentText) {
-        this.commentText = commentText;
     }
 
     public LocalDateTime getCreatedAt() {
