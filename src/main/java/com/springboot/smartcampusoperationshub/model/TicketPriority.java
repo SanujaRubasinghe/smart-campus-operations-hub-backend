@@ -1,4 +1,7 @@
 package com.springboot.smartcampusoperationshub.model;
 
-public class TicketPriority {
+public enum TicketPriority {
+    LOW,
+    MEDIUM,
+    HIGH
 }
