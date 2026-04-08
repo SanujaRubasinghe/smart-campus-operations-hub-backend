@@ -15,22 +15,31 @@ public class IncidentTicket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TicketCategory category;
+
+    @Column(nullable = false)
+    private String location;
 
     @Column(nullable = false, length = 1000)
     private String description;
 
-    private String category;
-    private String priority;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TicketPriority priority;
 
-    private String location;
+    @Column(nullable = false)
     private String preferredContact;
-    private String reporterName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TicketStatus status;
+
     private String assignedTechnicianName;
 
     @Column(length = 1000)
-    private String resolutionNote;
+    private String resolutionNotes;
 
     @Column(length = 1000)
     private String rejectionReason;
@@ -39,75 +48,40 @@ public class IncidentTicket {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TicketAttachment> attachments = new ArrayList<>();
-
     @JsonManagedReference
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TicketComment> comments = new ArrayList<>();
 
-    public IncidentTicket() {
-    }
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<TicketAttachment> attachments = new ArrayList<>();
 
     @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-        if (status == null) {
-            status = "OPEN";
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = TicketStatus.OPEN;
         }
     }
 
     @PreUpdate
-    public void onUpdate() {
-        updatedAt = LocalDateTime.now();
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public IncidentTicket() {
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCategory() {
+    public TicketCategory getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(TicketCategory category) {
         this.category = category;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getLocation() {
@@ -118,6 +92,22 @@ public class IncidentTicket {
         this.location = location;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TicketPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TicketPriority priority) {
+        this.priority = priority;
+    }
+
     public String getPreferredContact() {
         return preferredContact;
     }
@@ -126,12 +116,12 @@ public class IncidentTicket {
         this.preferredContact = preferredContact;
     }
 
-    public String getReporterName() {
-        return reporterName;
+    public TicketStatus getStatus() {
+        return status;
     }
 
-    public void setReporterName(String reporterName) {
-        this.reporterName = reporterName;
+    public void setStatus(TicketStatus status) {
+        this.status = status;
     }
 
     public String getAssignedTechnicianName() {
@@ -142,12 +132,12 @@ public class IncidentTicket {
         this.assignedTechnicianName = assignedTechnicianName;
     }
 
-    public String getResolutionNote() {
-        return resolutionNote;
+    public String getResolutionNotes() {
+        return resolutionNotes;
     }
 
-    public void setResolutionNote(String resolutionNote) {
-        this.resolutionNote = resolutionNote;
+    public void setResolutionNotes(String resolutionNotes) {
+        this.resolutionNotes = resolutionNotes;
     }
 
     public String getRejectionReason() {
@@ -166,19 +156,19 @@ public class IncidentTicket {
         return updatedAt;
     }
 
-    public List<TicketAttachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<TicketAttachment> attachments) {
-        this.attachments = attachments;
-    }
-
     public List<TicketComment> getComments() {
         return comments;
     }
 
     public void setComments(List<TicketComment> comments) {
         this.comments = comments;
+    }
+
+    public List<TicketAttachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<TicketAttachment> attachments) {
+        this.attachments = attachments;
     }
 }
