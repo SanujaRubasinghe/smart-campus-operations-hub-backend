@@ -1,60 +1,38 @@
 package com.springboot.smartcampusoperationshub.dto;
 
+import com.springboot.smartcampusoperationshub.model.TicketCategory;
+import com.springboot.smartcampusoperationshub.model.TicketPriority;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class CreateTicketRequest {
 
-    @NotBlank
-    private String title;
+    @NotNull(message = "Category is required")
+    private TicketCategory category;
 
-    @NotBlank
-    private String description;
-
-    @NotBlank
-    private String category;
-
-    @NotBlank
-    private String priority;
-
-    @NotBlank
+    @NotBlank(message = "Location is required")
     private String location;
 
-    @NotBlank
+    @NotBlank(message = "Description is required")
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
+    private String description;
+
+    @NotNull(message = "Priority is required")
+    private TicketPriority priority;
+
+    @NotBlank(message = "Preferred contact is required")
     private String preferredContact;
 
-    @NotBlank
-    private String reporterName;
-
-    public String getTitle() {
-        return title;
+    public CreateTicketRequest() {
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCategory() {
+    public TicketCategory getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(TicketCategory category) {
         this.category = category;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
     }
 
     public String getLocation() {
@@ -65,19 +43,27 @@ public class CreateTicketRequest {
         this.location = location;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TicketPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TicketPriority priority) {
+        this.priority = priority;
+    }
+
     public String getPreferredContact() {
         return preferredContact;
     }
 
     public void setPreferredContact(String preferredContact) {
         this.preferredContact = preferredContact;
-    }
-
-    public String getReporterName() {
-        return reporterName;
-    }
-
-    public void setReporterName(String reporterName) {
-        this.reporterName = reporterName;
     }
 }
