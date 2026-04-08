@@ -4,14 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 
 public class AssignTechnicianRequest {
 
-    @NotBlank
-    private String technicianName;
+    @NotBlank(message = "Technician name is required")
+    private String assignedTechnicianName;
 
-    public String getTechnicianName() {
-        return technicianName;
+    public AssignTechnicianRequest() {
     }
 
-    public void setTechnicianName(String technicianName) {
-        this.technicianName = technicianName;
+    public String getAssignedTechnicianName() {
+        return assignedTechnicianName;
+    }
+
+    public void setAssignedTechnicianName(String assignedTechnicianName) {
+        this.assignedTechnicianName = assignedTechnicianName;
     }
 }
