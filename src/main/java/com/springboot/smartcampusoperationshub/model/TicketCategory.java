@@ -1,4 +1,10 @@
 package com.springboot.smartcampusoperationshub.model;
 
-public class TicketCategory {
+public enum TicketCategory {
+    PROJECTOR,
+    NETWORK,
+    ELECTRICAL,
+    LAB_EQUIPMENT,
+    FURNITURE,
+    OTHER
 }
