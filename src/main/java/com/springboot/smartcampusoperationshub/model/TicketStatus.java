@@ -1,4 +1,9 @@
 package com.springboot.smartcampusoperationshub.model;
 
-public class TicketStatus {
+public enum TicketStatus {
+    OPEN,
+    IN_PROGRESS,
+    RESOLVED,
+    CLOSED,
+    REJECTED
 }
