@@ -1,17 +1,32 @@
 package com.springboot.smartcampusoperationshub.dto;
 
+import com.springboot.smartcampusoperationshub.model.UserRole;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-public class CommentRequest {
+public class AddCommentRequest {
 
-    @NotBlank
+    @NotBlank(message = "Comment text is required")
+    @Size(max = 1000, message = "Comment cannot exceed 1000 characters")
+    private String commentText;
+
+    @NotBlank(message = "Commenter name is required")
     private String commenterName;
 
-    @NotBlank
-    private String commenterRole;
+    @NotNull(message = "Commenter role is required")
+    private UserRole commenterRole;
 
-    @NotBlank
-    private String commentText;
+    public AddCommentRequest() {
+    }
+
+    public String getCommentText() {
+        return commentText;
+    }
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
 
     public String getCommenterName() {
         return commenterName;
@@ -21,19 +36,11 @@ public class CommentRequest {
         this.commenterName = commenterName;
     }
 
-    public String getCommenterRole() {
+    public UserRole getCommenterRole() {
         return commenterRole;
     }
 
-    public void setCommenterRole(String commenterRole) {
+    public void setCommenterRole(UserRole commenterRole) {
         this.commenterRole = commenterRole;
-    }
-
-    public String getCommentText() {
-        return commentText;
-    }
-
-    public void setCommentText(String commentText) {
-        this.commentText = commentText;
     }
 }
