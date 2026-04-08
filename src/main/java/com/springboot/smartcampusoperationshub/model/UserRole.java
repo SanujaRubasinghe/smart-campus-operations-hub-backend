@@ -1,4 +1,8 @@
 package com.springboot.smartcampusoperationshub.model;
 
-public class UserRole {
+public enum UserRole {
+    STUDENT,
+    STAFF,
+    TECHNICIAN,
+    ADMIN
 }
