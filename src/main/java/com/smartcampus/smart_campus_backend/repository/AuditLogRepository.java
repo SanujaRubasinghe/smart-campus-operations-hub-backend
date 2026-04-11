@@ -14,4 +14,4 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
 
     Page<AuditLog> findByAction(String action, Pageable pageable);
 
-}}
+}
