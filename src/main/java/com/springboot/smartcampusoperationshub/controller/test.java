@@ -1,1 +1,0 @@
-package com.springboot.smartcampusoperationshub.controller;

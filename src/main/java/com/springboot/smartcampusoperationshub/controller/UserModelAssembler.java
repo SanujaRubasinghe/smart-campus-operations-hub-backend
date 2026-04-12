@@ -1,0 +1,32 @@
+package com.springboot.smartcampusoperationshub.controller;
+
+import com.springboot.smartcampusoperationshub.dto.UserModel;
+import com.springboot.smartcampusoperationshub.model.User;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UserModelAssembler extends RepresentationModelAssemblerSupport<User, UserModel> {
+
+    public UserModelAssembler() {
+        super(AuthController.class, UserModel.class);
+    }
+
+    @Override
+    public UserModel toModel(User entity) {
+        UserModel model = instantiateModel(entity);
+
+        model.add(linkTo(methodOn(AuthController.class).getCurrentUser(null)).withSelfRel());
+        model.add(linkTo(methodOn(NotificationController.class).getNotifications(null, null)).withRel("notifications"));
+
+        model.setId(entity.getId());
+        model.setEmail(entity.getEmail());
+        model.setName(entity.getName());
+        model.setPicture(entity.getPicture());
+        model.setRole(entity.getRole().name());
+        model.setMfaEnabled(entity.isMfaEnabled());
+        model.setCreatedAt(entity.getCreatedAt());
+        model.setLastLogin(entity.getLastLogin());
+
+        return model;
+    }
+}
