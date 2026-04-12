@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.security;
 
-import com.smartcampus.smart_campus_backend.model.User;
+import com.springboot.smartcampusoperationshub.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
