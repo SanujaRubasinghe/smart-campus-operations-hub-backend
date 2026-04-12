@@ -1,8 +1,13 @@
 package com.springboot.smartcampusoperationshub.controller;
 
+
 import com.springboot.smartcampusoperationshub.dto.UserModel;
 import com.springboot.smartcampusoperationshub.model.User;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class UserModelAssembler extends RepresentationModelAssemblerSupport<User, UserModel> {
