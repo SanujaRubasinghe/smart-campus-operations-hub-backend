@@ -1,7 +1,10 @@
 package com.springboot.smartcampusoperationshub.service;
 
 import com.springboot.smartcampusoperationshub.dto.SessionResponse;
+import com.springboot.smartcampusoperationshub.dto.UpdateProfileRequest;
 import com.springboot.smartcampusoperationshub.dto.UserProfileResponse;
+import com.springboot.smartcampusoperationshub.exception.ResourceNotFoundException;
+import com.springboot.smartcampusoperationshub.exception.UnauthorizedException;
 import com.springboot.smartcampusoperationshub.model.User;
 import com.springboot.smartcampusoperationshub.model.UserSession;
 import com.springboot.smartcampusoperationshub.repository.UserRepository;
