@@ -1,9 +1,9 @@
 package com.springboot.smartcampusoperationshub.config;
 
-import com.smartcampus.smart_campus_backend.security.CustomOAuth2UserService;
-import com.smartcampus.smart_campus_backend.security.JwtAuthenticationEntryPoint;
-import com.smartcampus.smart_campus_backend.security.JwtAuthenticationFilter;
-import com.smartcampus.smart_campus_backend.security.OAuth2SuccessHandler;
+import com.springboot.smartcampusoperationshub.security.CustomOAuth2UserService;
+import com.springboot.smartcampusoperationshub.security.JwtAuthenticationEntryPoint;
+import com.springboot.smartcampusoperationshub.security.JwtAuthenticationFilter;
+import com.springboot.smartcampusoperationshub.security.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +38,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {// permission to endpoints is easy case machn
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
