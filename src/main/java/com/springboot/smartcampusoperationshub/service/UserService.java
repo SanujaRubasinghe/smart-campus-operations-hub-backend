@@ -1,7 +1,11 @@
 package com.springboot.smartcampusoperationshub.service;
 
-import com.springboot.smartcampusoperationshub.model.*;
-import com.springboot.smartcampusoperationshub.repository.*;
+import com.springboot.smartcampusoperationshub.dto.SessionResponse;
+import com.springboot.smartcampusoperationshub.dto.UserProfileResponse;
+import com.springboot.smartcampusoperationshub.model.User;
+import com.springboot.smartcampusoperationshub.model.UserSession;
+import com.springboot.smartcampusoperationshub.repository.UserRepository;
+import com.springboot.smartcampusoperationshub.repository.UserSessionRepository;
 import com.springboot.smartcampusoperationshub.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
