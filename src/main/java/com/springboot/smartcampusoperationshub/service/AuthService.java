@@ -1,10 +1,10 @@
 package com.springboot.smartcampusoperationshub.service;
 
-import com.smartcampus.smart_campus_backend.model.User;
-import com.smartcampus.smart_campus_backend.model.UserSession;
-import com.smartcampus.smart_campus_backend.repository.UserRepository;
-import com.smartcampus.smart_campus_backend.repository.UserSessionRepository;
-import com.smartcampus.smart_campus_backend.security.JwtTokenProvider;
+import com.springboot.smartcampusoperationshub.model.User;
+import com.springboot.smartcampusoperationshub.model.UserSession;
+import com.springboot.smartcampusoperationshub.repository.UserRepository;
+import com.springboot.smartcampusoperationshub.repository.UserSessionRepository;
+import com.springboot.smartcampusoperationshub.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

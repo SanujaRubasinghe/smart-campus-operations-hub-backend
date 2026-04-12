@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.repository;
 
-import com.smartcampus.smart_campus_backend.model.AuditLog;
+import com.springboot.smartcampusoperationshub.model.AuditLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

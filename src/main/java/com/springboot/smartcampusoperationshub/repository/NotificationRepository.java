@@ -1,7 +1,7 @@
 package com.springboot.smartcampusoperationshub.repository;
 
-import com.smartcampus.smart_campus_backend.model.Notification;
-import com.smartcampus.smart_campus_backend.model.User;
+import com.springboot.smartcampusoperationshub.model.Notification;
+import com.springboot.smartcampusoperationshub.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

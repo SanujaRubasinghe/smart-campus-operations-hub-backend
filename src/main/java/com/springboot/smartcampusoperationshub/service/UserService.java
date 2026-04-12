@@ -1,12 +1,8 @@
 package com.springboot.smartcampusoperationshub.service;
 
-import com.smartcampus.smart_campus_backend.dto.*;
-import com.smartcampus.smart_campus_backend.exception.*;
-import com.smartcampus.smart_campus_backend.model.User;
-import com.smartcampus.smart_campus_backend.model.UserSession;
-import com.smartcampus.smart_campus_backend.repository.UserRepository;
-import com.smartcampus.smart_campus_backend.repository.UserSessionRepository;
-import com.smartcampus.smart_campus_backend.security.UserPrincipal;
+import com.springboot.smartcampusoperationshub.model.*;
+import com.springboot.smartcampusoperationshub.repository.*;
+import com.springboot.smartcampusoperationshub.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

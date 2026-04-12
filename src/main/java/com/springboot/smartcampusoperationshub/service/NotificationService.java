@@ -1,9 +1,9 @@
 package com.springboot.smartcampusoperationshub.service;
 
-import com.smartcampus.smart_campus_backend.model.Notification;
-import com.smartcampus.smart_campus_backend.repository.NotificationPreferencesRepository;
-import com.smartcampus.smart_campus_backend.repository.NotificationRepository;
-import com.smartcampus.smart_campus_backend.repository.UserRepository;
+import com.springboot.smartcampusoperationshub.repository.NotificationPreferencesRepository;
+import com.springboot.smartcampusoperationshub.repository.NotificationRepository;
+import com.springboot.smartcampusoperationshub.repository.UserRepository;
+import com.springboot.smartcampusoperationshub.model.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +23,6 @@ public class NotificationService {
     private final NotificationPreferencesRepository preferencesRepository;
     private final UserRepository userRepository;
 
-    // Store SSE emitters for real-time updates
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     public Page<Notification> getUserNotifications(Long userId, Pageable pageable) {

@@ -1,8 +1,8 @@
 package com.springboot.smartcampusoperationshub.service;
 
-import com.smartcampus.smart_campus_backend.model.AuditLog;
-import com.smartcampus.smart_campus_backend.model.User;
-import com.smartcampus.smart_campus_backend.repository.AuditLogRepository;
+import com.springboot.smartcampusoperationshub.model.AuditLog;
+import com.springboot.smartcampusoperationshub.model.User;
+import com.springboot.smartcampusoperationshub.repository.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
