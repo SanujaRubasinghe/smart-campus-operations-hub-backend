@@ -1,5 +1,6 @@
 package com.springboot.smartcampusoperationshub.model;
 
+import com.springboot.smartcampusoperationshub.model.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;

@@ -1,6 +1,8 @@
 package com.springboot.smartcampusoperationshub.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.springboot.smartcampusoperationshub.model.enums.AuthProvider;
+import com.springboot.smartcampusoperationshub.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
