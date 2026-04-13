@@ -1,6 +1,6 @@
 package com.springboot.smartcampusoperationshub.security;
 
-import com.springboot.smartcampusoperationshub.model.AuthProvider;
+import com.springboot.smartcampusoperationshub.model.enums.AuthProvider;
 import com.springboot.smartcampusoperationshub.model.User;
 import com.springboot.smartcampusoperationshub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
