@@ -1,5 +1,5 @@
 package com.springboot.smartcampusoperationshub.model.enums;
 
 public enum AuthProvider {
-    google, local
+    google, github, local
 }

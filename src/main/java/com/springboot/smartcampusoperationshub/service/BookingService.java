@@ -12,6 +12,7 @@ import com.springboot.smartcampusoperationshub.model.Booking;
 import com.springboot.smartcampusoperationshub.model.Resource;
 import com.springboot.smartcampusoperationshub.model.User;
 import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
+import com.springboot.smartcampusoperationshub.model.enums.NotificationType;
 import com.springboot.smartcampusoperationshub.repository.BookingRepository;
 import com.springboot.smartcampusoperationshub.repository.ResourceRepository;
 import com.springboot.smartcampusoperationshub.repository.UserRepository;
@@ -31,13 +32,16 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ResourceRepository resourceRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public BookingService(BookingRepository bookingRepository,
                           ResourceRepository resourceRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          NotificationService notificationService) {
         this.bookingRepository = bookingRepository;
         this.resourceRepository = resourceRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public Booking createBooking(BookingRequestDTO dto, Long userId) {
@@ -93,10 +97,20 @@ public class BookingService {
         booking.setAdminNote(dto.getNote());
         booking.setReviewedBy(admin);
 
-        return bookingRepository.save(booking);
+        Booking saved = bookingRepository.save(booking);
+
+        // Notify booking owner
+        notificationService.createNotification(
+            booking.getUser().getId(),
+            NotificationType.BOOKING_APPROVED,
+            "Booking Approved",
+            "Your booking for " + booking.getResource().getName() + " on " + booking.getBookingDate() + " has been approved.",
+            "/bookings"
+        );
+        return saved;
     }
 
-    public Booking rejectBooking(Long bookingId, RejectBookingDTO dto,  Long adminId) {
+    public Booking rejectBooking(Long bookingId, RejectBookingDTO dto, Long adminId) {
         Booking booking = findByIdOrThrow(bookingId);
 
         if (booking.getStatus() != BookingStatus.PENDING) {
@@ -112,20 +126,31 @@ public class BookingService {
         booking.setAdminNote(dto.getReason());
         booking.setReviewedBy(admin);
 
-        return bookingRepository.save(booking);
+        Booking saved = bookingRepository.save(booking);
+
+        // Notify booking owner
+        notificationService.createNotification(
+            booking.getUser().getId(),
+            NotificationType.BOOKING_REJECTED,
+            "Booking Rejected",
+            "Your booking for " + booking.getResource().getName() + " on " + booking.getBookingDate() + " was rejected."
+                + (dto.getReason() != null && !dto.getReason().isEmpty() ? " Reason: " + dto.getReason() : ""),
+            "/bookings"
+        );
+        return saved;
     }
 
     public Booking cancelBooking(Long bookingId, Long requestingUserId) {
         Booking booking = findByIdOrThrow(bookingId);
 
-        if (booking.getStatus() != BookingStatus.APPROVED) {
-            throw new InvalidStatusTransitionException(
-                    "Only APPROVED bookings can be cancelled. Current status: " + booking.getStatus()
-            );
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new InvalidStatusTransitionException("Booking is already cancelled.");
+        }
+        if (booking.getStatus() == BookingStatus.REJECTED) {
+            throw new InvalidStatusTransitionException("Rejected bookings cannot be cancelled.");
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
-
         return bookingRepository.save(booking);
     }
 
