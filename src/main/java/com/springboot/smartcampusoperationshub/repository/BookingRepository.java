@@ -77,6 +77,46 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("resourceId") UUID resourceId,
             @Param("now") LocalDateTime now);
 
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.resource.id = :resourceId
+          AND b.bookingDate = :date
+          AND b.status IN ('PENDING', 'APPROVED', 'CHECKED_IN')
+          AND b.startTime < :endTime
+          AND b.endTime > :startTime
+    """)
+    List<Booking> findConflictingBookings(
+            @Param("resourceId") UUID resourceId,
+            @Param("date") LocalDate date,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime);
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.resource.id = :resourceId
+          AND b.bookingDate = :date
+          AND b.status IN ('PENDING', 'APPROVED', 'CHECKED_IN')
+        ORDER BY b.startTime
+    """)
+    List<Booking> findDayBookingsForResource(
+            @Param("resourceId") UUID resourceId,
+            @Param("date") LocalDate date);
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.resource.id IN :resourceIds
+          AND b.bookingDate = :date
+          AND b.status IN ('PENDING', 'APPROVED', 'CHECKED_IN')
+          AND b.startTime < :endTime
+          AND b.endTime > :startTime
+    """)
+    List<Booking> findBusyResources(
+            @Param("resourceIds") List<UUID> resourceIds,
+            @Param("date") LocalDate date,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime);
+
     List<Booking> findByStatusAndStartTimeBefore(BookingStatus status, LocalDateTime cutoff);
 
 

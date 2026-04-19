@@ -1,10 +1,13 @@
 package com.springboot.smartcampusoperationshub.repository;
 
 import com.springboot.smartcampusoperationshub.model.Resource;
+import com.springboot.smartcampusoperationshub.model.enums.ResourceStatus;
+import com.springboot.smartcampusoperationshub.model.enums.ResourceType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,4 +20,8 @@ public interface ResourceRepository extends JpaRepository<Resource, UUID>, JpaSp
     
     // Spring Data JPA will automatically implement this query based on the method name
     boolean existsByNameAndLocation(String name, String location);
+
+    List<Resource> findByStatus(ResourceStatus status);
+
+    List<Resource> findByTypeAndStatus(ResourceType type, ResourceStatus status);
 }

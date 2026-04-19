@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/checkin")
 public class CheckInController {
@@ -19,9 +21,9 @@ public class CheckInController {
         this.checkInService = checkInService;
     }
 
-    @PostMapping("/room/{roomId}")
+    @PostMapping("/room/{resourceId}")
     public ResponseEntity<CheckInResponse> checkIn(
-            @PathVariable Long roomId,
+            @PathVariable UUID resourceId,
             @RequestBody CheckInRequest body,
             @AuthenticationPrincipal UserPrincipal principal,
             HttpServletRequest request) {
@@ -35,7 +37,7 @@ public class CheckInController {
 
         CheckInResponse resp = checkInService.checkIn(
                 principal.getId(),
-                roomId,
+                resourceId,
                 body.getQrSecret(),
                 clientIp);
 

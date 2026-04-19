@@ -1,6 +1,7 @@
 package com.springboot.smartcampusoperationshub.service;
 
 import com.springboot.smartcampusoperationshub.dto.bookings.ApproveBookingDTO;
+import com.springboot.smartcampusoperationshub.dto.bookings.BookingAlternativeDTO;
 import com.springboot.smartcampusoperationshub.dto.bookings.BookingRequestDTO;
 import com.springboot.smartcampusoperationshub.dto.bookings.RejectBookingDTO;
 import com.springboot.smartcampusoperationshub.exception.ResourceNotFoundException;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -33,19 +35,22 @@ public class BookingService {
     private final ResourceRepository resourceRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final AlternativeRecommendationService alternativeRecommendationService;
 
     public BookingService(BookingRepository bookingRepository,
                           ResourceRepository resourceRepository,
                           UserRepository userRepository,
-                          NotificationService notificationService) {
+                          NotificationService notificationService,
+                          AlternativeRecommendationService alternativeRecommendationService) {
         this.bookingRepository = bookingRepository;
         this.resourceRepository = resourceRepository;
         this.userRepository = userRepository;
         this.notificationService = notificationService;
+        this.alternativeRecommendationService = alternativeRecommendationService;
     }
 
     public Booking createBooking(BookingRequestDTO dto, Long userId) {
-        if(!dto.getStartTime().isBefore(dto.getEndTime())) {
+        if (!dto.getStartTime().isBefore(dto.getEndTime())) {
             throw new IllegalArgumentException("Start time must be before end time");
         }
 
@@ -54,6 +59,7 @@ public class BookingService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
         long conflicts = bookingRepository.countConflicts(
                 dto.getResourceId(),
                 dto.getBookingDate(),
@@ -63,8 +69,15 @@ public class BookingService {
         );
 
         if (conflicts > 0) {
+            log.info("Booking conflict for resource {} on {}; computing alternatives",
+                    resource.getName(), dto.getBookingDate());
+
+            List<BookingAlternativeDTO> alternatives =
+                    alternativeRecommendationService.findAlternatives(dto);
+
             throw new BookingConflictException(
-                    "The resource '" + resource.getName() + "' is already booked during the requested time range."
+                    "The resource '" + resource.getName() + "' is already booked during the requested time range.",
+                    alternatives
             );
         }
 
