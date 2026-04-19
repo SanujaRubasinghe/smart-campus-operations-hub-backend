@@ -7,6 +7,7 @@ import com.springboot.smartcampusoperationshub.hateoas.bookings.BookingModel;
 import com.springboot.smartcampusoperationshub.hateoas.bookings.BookingModelAssembler;
 import com.springboot.smartcampusoperationshub.model.Booking;
 import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
+import com.springboot.smartcampusoperationshub.security.UserPrincipal;
 import com.springboot.smartcampusoperationshub.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -78,40 +81,43 @@ public class BookingController {
         return ResponseEntity.ok(pagedAssembler.toModel(page, assembler));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/approve")
     public ResponseEntity<BookingModel> approveBooking(
             @PathVariable Long id,
-            @RequestBody(required = false)ApproveBookingDTO dto
+            @RequestBody(required = false) ApproveBookingDTO dto,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
             ) {
         if (dto == null) {
             dto = new ApproveBookingDTO();
         }
-
-        // get adminId from the user session after integrating
-        Booking booking = bookingService.approveBooking(id, dto, 1L);
+        Long adminId = userPrincipal != null ? userPrincipal.getId() : 1L;
+        Booking booking = bookingService.approveBooking(id, dto, adminId);
         return ResponseEntity.ok(assembler.toModel(booking));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}/reject")
     public ResponseEntity<BookingModel> rejectBooking(
             @PathVariable Long id,
-            @RequestBody(required = false) RejectBookingDTO dto
+            @RequestBody(required = false) RejectBookingDTO dto,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
         if (dto == null) {
             dto = new RejectBookingDTO();
         }
-
-        // get adminId from the user session after integrating
-        Booking booking = bookingService.rejectBooking(id, dto, 1L);
+        Long adminId = userPrincipal != null ? userPrincipal.getId() : 1L;
+        Booking booking = bookingService.rejectBooking(id, dto, adminId);
         return ResponseEntity.ok(assembler.toModel(booking));
     }
 
     @PutMapping("/{id}/cancel")
     public ResponseEntity<BookingModel> cancelBooking(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ) {
-        // get userId from the user session after integrating
-        Booking booking = bookingService.cancelBooking(id, 1L);
+        Long userId = userPrincipal != null ? userPrincipal.getId() : 1L;
+        Booking booking = bookingService.cancelBooking(id, userId);
         return ResponseEntity.ok(assembler.toModel(booking));
     }
 

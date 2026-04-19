@@ -42,9 +42,44 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         Map<String, Object> attributes = oAuth2User.getAttributes();
+
+        // Detect provider
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        boolean isGithub = "github".equalsIgnoreCase(registrationId);
+
+        // --- Resolve email ---
         String email = (String) attributes.get("email");
+        if (email == null && isGithub) {
+            // GitHub users with private email: fall back to login@users.noreply.github.com
+            String login = (String) attributes.get("login");
+            email = (login != null ? login : "unknown") + "@users.noreply.github.com";
+            log.warn("GitHub user has private email, using synthetic email: {}", email);
+        }
+
+        // --- Resolve name ---
         String name = (String) attributes.get("name");
-        String picture = (String) attributes.get("picture");
+        if (name == null && isGithub) {
+            name = (String) attributes.get("login"); // GitHub login as fallback
+        }
+
+        // --- Resolve picture ---
+        String picture;
+        if (isGithub) {
+            picture = (String) attributes.get("avatar_url");
+        } else {
+            picture = (String) attributes.get("picture");
+        }
+
+        // --- Resolve provider ID ---
+        String providerId;
+        if (isGithub) {
+            Object idObj = attributes.get("id");
+            providerId = idObj != null ? String.valueOf(idObj) : null;
+        } else {
+            providerId = (String) attributes.get("sub");
+        }
+
+        AuthProvider provider = isGithub ? AuthProvider.github : AuthProvider.google;
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         User user;
@@ -54,20 +89,34 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setName(name);
             user.setPicture(picture);
             user.setLastLogin(LocalDateTime.now());
-            log.info("Existing user logged in: {}", email);
+            log.info("Existing user logged in: {} via {}", email, registrationId);
         } else {
             user = new User();
             user.setEmail(email);
+            user.setUsername(deriveUsername(isGithub ? (String) attributes.get("login") : null, email));
             user.setName(name);
             user.setPicture(picture);
-            user.setProvider(AuthProvider.google);
-            user.setProviderId((String) attributes.get("sub"));
+            user.setProvider(provider);
+            user.setProviderId(providerId);
             user.setLastLogin(LocalDateTime.now());
-            log.info("New user created: {}", email);
+            log.info("New user created: {} via {}", email, registrationId);
         }
 
         user = userRepository.save(user);
 
         return UserPrincipal.create(user);
+    }
+
+    /** Derive a unique username: prefer GitHub login, fall back to email prefix */
+    private String deriveUsername(String preferredLogin, String email) {
+        String base = (preferredLogin != null && !preferredLogin.isBlank())
+                ? preferredLogin.toLowerCase().replaceAll("[^a-z0-9._]", "_")
+                : email.split("@")[0].toLowerCase().replaceAll("[^a-z0-9._]", "_");
+        String candidate = base;
+        int attempt = 0;
+        while (userRepository.existsByUsername(candidate)) {
+            candidate = base + (++attempt);
+        }
+        return candidate;
     }
 }

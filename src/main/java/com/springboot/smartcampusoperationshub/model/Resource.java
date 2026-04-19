@@ -3,17 +3,16 @@ package com.springboot.smartcampusoperationshub.model;
 import com.springboot.smartcampusoperationshub.model.enums.ResourceStatus;
 import com.springboot.smartcampusoperationshub.model.enums.ResourceType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 /**
  * Entity representing a physical or non-physical bookable asset.
@@ -29,6 +28,9 @@ public class Resource {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
     private UUID id;
+
+    @Column(unique = true, length = 64)
+    private String qrSecret;
 
     @NotBlank(message = "Resource name is mandatory")
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
@@ -75,7 +77,15 @@ public class Resource {
     // Getters and Setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
-    
+
+    public String getQrSecret() {
+        return qrSecret;
+    }
+
+    public void setQrSecret(String qrSecret) {
+        this.qrSecret = qrSecret;
+    }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     
