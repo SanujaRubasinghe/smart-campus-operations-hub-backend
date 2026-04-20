@@ -4,6 +4,8 @@ import com.springboot.smartcampusoperationshub.repository.NotificationPreference
 import com.springboot.smartcampusoperationshub.repository.NotificationRepository;
 import com.springboot.smartcampusoperationshub.repository.UserRepository;
 import com.springboot.smartcampusoperationshub.model.Notification;
+import com.springboot.smartcampusoperationshub.model.User;
+import com.springboot.smartcampusoperationshub.model.enums.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,5 +42,23 @@ public class NotificationService {
 
     public long getUnreadCount(Long userId) {
         return notificationRepository.countByUserIdAndIsReadFalseAndIsDeletedFalse(userId);
+    }
+
+    /**
+     * Creates and persists a notification for the given userId.
+     */
+    @Transactional
+    public void createNotification(Long userId, NotificationType type, String title, String message, String link) {
+        userRepository.findById(userId).ifPresent(user -> {
+            Notification n = new Notification();
+            n.setUser(user);
+            n.setType(type);
+            n.setTitle(title);
+            n.setMessage(message);
+            n.setLink(link);
+            n.setRead(false);
+            n.setDeleted(false);
+            notificationRepository.save(n);
+        });
     }
 }

@@ -14,7 +14,7 @@ public class AddCommentRequest {
     @NotBlank(message = "Commenter name is required")
     private String commenterName;
 
-    @NotNull(message = "Commenter role is required")
+    // Optional — not required from frontend
     private UserRole commenterRole;
 
     public AddCommentRequest() {

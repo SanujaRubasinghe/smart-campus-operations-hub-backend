@@ -1,0 +1,46 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven (skip tests that need DB)
+        run: mvn -B package --file pom.xml -DskipTests
+
+      - name: Run unit tests
+        run: mvn -B test --file pom.xml
+        env:
+          # Provide dummy env values so Spring context loads
+          GOOGLE_CLIENT_ID: dummy
+          GOOGLE_CLIENT_SECRET: dummy
+          GITHUB_CLIENT_ID: dummy
+          GITHUB_CLIENT_SECRET: dummy
+          SPRING_DATASOURCE_URL: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.h2.Driver
+          SPRING_DATASOURCE_USERNAME: sa
+          SPRING_DATASOURCE_PASSWORD: ""
+          SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: target/surefire-reports/

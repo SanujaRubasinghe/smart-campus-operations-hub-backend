@@ -57,6 +57,11 @@ public class ResourceService {
         existing.setCapacity(updatedData.getCapacity());
         existing.setLocation(updatedData.getLocation());
         existing.setAmenities(updatedData.getAmenities());
+        existing.setStatus(updatedData.getStatus());
+        // Only overwrite imageUrl if a new one was provided
+        if (updatedData.getImageUrl() != null && !updatedData.getImageUrl().isBlank()) {
+            existing.setImageUrl(updatedData.getImageUrl());
+        }
         return resourceRepository.save(existing);
     }
 

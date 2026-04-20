@@ -44,6 +44,9 @@ public class IncidentTicket {
     @Column(length = 1000)
     private String rejectionReason;
 
+    @Column(name = "reported_by_user_id")
+    private Long reportedByUserId;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -171,4 +174,7 @@ public class IncidentTicket {
     public void setAttachments(List<TicketAttachment> attachments) {
         this.attachments = attachments;
     }
-}
+
+    public Long getReportedByUserId() { return reportedByUserId; }
+    public void setReportedByUserId(Long id) { this.reportedByUserId = id; }
+}

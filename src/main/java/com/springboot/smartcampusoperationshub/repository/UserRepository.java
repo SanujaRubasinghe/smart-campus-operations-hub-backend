@@ -18,6 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByUsername(String username);
+
     @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.role = 'ADMIN'")
     boolean hasAnyAdmin();
 }
