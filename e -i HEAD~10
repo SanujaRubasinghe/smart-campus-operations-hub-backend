@@ -1,0 +1,29 @@
+[33m51bcc63[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrashv/feature/incident-ticket-management[m[33m, [m[1;31morigin/rashv/feature/incident-ticket-management[m[33m)[m Add new FileStorageUtil used for saving and managing uploaded files
+[33m63cb433[m Add TicketCommentController related to ticket comment handling
+[33m449e34a[m Add TicketAttachmentController used for uploading and retrieving attachments
+[33md1228c9[m Updated IncidentTicketController endpoints related to ticket operations
+[33m97d4fa0[m Add TicketCommentService used for adding updating and deleting comments
+[33m59cd16c[m Add TicketAttachmentService for handling file attachment operations
+[33me0b95ce[m Made changes to IncidentTicketService related to ticket creation and updates
+[33meab4a4c[m Updated TicketCommentRepository for managing ticket comment records
+[33m05717ff[m TicketAttachmentRepository used for storing and retrieving attachments
+[33m023df82[m ResourceNotFoundException used when requested data cannot be found
+[33m5ec6fc1[m GlobalExceptionHandler to handle API errors in a consistent way
+[33m12e934c[m Updated BadRequestException class used to handle invalid requests
+[33md50d3f2[m Updated UpdateTicketStatusRequest DTO used for changing ticket status
+[33m6825154[m Modified UpdateTicketDetailsRequest DTO used when updating ticket details
+[33m96afcaf[m Updated CreateTicketRequest DTO used when creating a new incident ticket
+[33m95ad539[m Modified AssignTechnicianRequest DTO for technician assignment feature
+[33mf8485b9[m Updated AddCommentRequest DTO used when adding comments to tickets
+[33mb5eeb61[m Updated UserRole enum used for role based actions in the system
+[33mbb65aaf[m Modified TicketStatus enum to support ticket status changes
+[33m26f52aa[m Updated TicketPriority enum used to define ticket priority levels
+[33me2aad71[m Updated TicketComment model and adjusted comment related fields
+[33m95581e2[m Made small changes to TicketCategory enum used for ticket classification
+[33meca9f04[m Updated TicketAttachment model to better handle attachment details
+[33m1d0963c[m Modified IncidentTicket.java file to improve ticket data modeling and field organization
+[33m77feae7[m Update project configuration and dependencies for Smart Campus Operations Hub backend
+[33m0e0ab4e[m Create TicketComment entity model
+[33m3be586d[m Create IncidentTicket entity model
+[33mf21638e[m[33m ([m[1;31morigin/rashali/feature/incident-ticket-management[m[33m, [m[1;32mrashali/feature/incident-ticket-management[m[33m)[m Add JPA entity models for incident ticket management
+[33m83c43f0[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m initial commit
