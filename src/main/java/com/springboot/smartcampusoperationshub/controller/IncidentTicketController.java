@@ -80,13 +80,24 @@ public class IncidentTicketController {
         return ResponseEntity.ok(incidentTicketService.updateTicketDetails(id, request));
     }
 
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @GetMapping("/{id}/pdf")
+//    public ResponseEntity<byte[]> downloadTicketPdf(@PathVariable Long id) {
+//        byte[] pdfBytes = ticketPdfService.generateTicketPdf(id);
+//
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ticket-" + id + ".pdf")
+//                .contentType(MediaType.APPLICATION_PDF)
+//                .body(pdfBytes);
+//    }
+
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{id}/pdf")
-    public ResponseEntity<byte[]> downloadTicketPdf(@PathVariable Long id) {
-        byte[] pdfBytes = ticketPdfService.generateTicketPdf(id);
+    @GetMapping("/pdf/all")
+    public ResponseEntity<byte[]> downloadAllTicketsPdf() {
+        byte[] pdfBytes = ticketPdfService.generateAllTicketsPdf();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ticket-" + id + ".pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=all-tickets-report.pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
