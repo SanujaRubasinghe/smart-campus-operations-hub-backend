@@ -11,7 +11,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -45,6 +48,77 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                      @Param("userId")Long userId,
                                      @Param("bookingDate")LocalDate bookingDate,
                                      Pageable pageable);
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.user.id = :userId
+          AND b.resource.id = :resourceId
+          AND b.status = 'APPROVED'
+          AND b.startTime <= :now
+          AND b.startTime >= :graceWindowStart
+        ORDER BY b.startTime DESC
+    """)
+    Optional<Booking> findActiveBookingForCheckIn(
+            @Param("userId") Long userId,
+            @Param("resourceId") UUID resourceId,
+            @Param("now") LocalDateTime now,
+            @Param("graceWindowStart") LocalDateTime graceWindowStart);
+
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.user.id = :userId
+          AND b.resource.id = :resourceId
+          AND b.status = 'CHECKED_IN'
+          AND b.endTime >= :now
+    """)
+    Optional<Booking> findActiveCheckedInBooking(
+            @Param("userId") Long userId,
+            @Param("resourceId") UUID resourceId,
+            @Param("now") LocalDateTime now);
+
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.resource.id = :resourceId
+          AND b.bookingDate = :date
+          AND b.status IN ('PENDING', 'APPROVED', 'CHECKED_IN')
+          AND b.startTime < :endTime
+          AND b.endTime > :startTime
+    """)
+    List<Booking> findConflictingBookings(
+            @Param("resourceId") UUID resourceId,
+            @Param("date") LocalDate date,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime);
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.resource.id = :resourceId
+          AND b.bookingDate = :date
+          AND b.status IN ('PENDING', 'APPROVED', 'CHECKED_IN')
+        ORDER BY b.startTime
+    """)
+    List<Booking> findDayBookingsForResource(
+            @Param("resourceId") UUID resourceId,
+            @Param("date") LocalDate date);
+
+    @Query("""
+        SELECT b FROM Booking b
+        WHERE b.resource.id IN :resourceIds
+          AND b.bookingDate = :date
+          AND b.status IN ('PENDING', 'APPROVED', 'CHECKED_IN')
+          AND b.startTime < :endTime
+          AND b.endTime > :startTime
+    """)
+    List<Booking> findBusyResources(
+            @Param("resourceIds") List<UUID> resourceIds,
+            @Param("date") LocalDate date,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime);
+
+    List<Booking> findByStatusAndStartTimeBefore(BookingStatus status, LocalDateTime cutoff);
+
 
     Long user(User user);
 }

@@ -1,14 +1,20 @@
 package com.springboot.smartcampusoperationshub.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "bookings", indexes = {
+        @Index(name = "idx_bookings_status_starttime", columnList = "status, startTime"),
+        @Index(name = "idx_bookings_user_room", columnList = "user_id, resource_id")
+})
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,11 +54,21 @@ public class Booking {
     @JoinColumn(name = "reviewed_by")
     private User reviewedBy;
 
+    @Column(name = "checked_in_at")
+    private LocalDateTime checkedInAt;
+
+    @Column(name = "no_show_marked_at")
+    private LocalDateTime noShowMarkedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CheckInEvent> checkInEvents = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
@@ -153,6 +169,30 @@ public class Booking {
 
     public void setReviewedBy(User reviewedBy) {
         this.reviewedBy = reviewedBy;
+    }
+
+    public LocalDateTime getCheckedInAt() {
+        return checkedInAt;
+    }
+
+    public void setCheckedInAt(LocalDateTime checkedInAt) {
+        this.checkedInAt = checkedInAt;
+    }
+
+    public LocalDateTime getNoShowMarkedAt() {
+        return noShowMarkedAt;
+    }
+
+    public void setNoShowMarkedAt(LocalDateTime noShowMarkedAt) {
+        this.noShowMarkedAt = noShowMarkedAt;
+    }
+
+    public List<CheckInEvent> getCheckInEvents() {
+        return checkInEvents;
+    }
+
+    public void setCheckInEvents(List<CheckInEvent> checkInEvents) {
+        this.checkInEvents = checkInEvents;
     }
 
     public LocalDateTime getCreatedAt() {

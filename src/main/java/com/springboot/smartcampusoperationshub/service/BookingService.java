@@ -1,6 +1,7 @@
 package com.springboot.smartcampusoperationshub.service;
 
 import com.springboot.smartcampusoperationshub.dto.bookings.ApproveBookingDTO;
+import com.springboot.smartcampusoperationshub.dto.bookings.BookingAlternativeDTO;
 import com.springboot.smartcampusoperationshub.dto.bookings.BookingRequestDTO;
 import com.springboot.smartcampusoperationshub.dto.bookings.RejectBookingDTO;
 import com.springboot.smartcampusoperationshub.exception.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import com.springboot.smartcampusoperationshub.model.Booking;
 import com.springboot.smartcampusoperationshub.model.Resource;
 import com.springboot.smartcampusoperationshub.model.User;
 import com.springboot.smartcampusoperationshub.model.enums.BookingStatus;
+import com.springboot.smartcampusoperationshub.model.enums.NotificationType;
 import com.springboot.smartcampusoperationshub.repository.BookingRepository;
 import com.springboot.smartcampusoperationshub.repository.ResourceRepository;
 import com.springboot.smartcampusoperationshub.repository.UserRepository;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -31,17 +34,23 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ResourceRepository resourceRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+    private final AlternativeRecommendationService alternativeRecommendationService;
 
     public BookingService(BookingRepository bookingRepository,
                           ResourceRepository resourceRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          NotificationService notificationService,
+                          AlternativeRecommendationService alternativeRecommendationService) {
         this.bookingRepository = bookingRepository;
         this.resourceRepository = resourceRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
+        this.alternativeRecommendationService = alternativeRecommendationService;
     }
 
     public Booking createBooking(BookingRequestDTO dto, Long userId) {
-        if(!dto.getStartTime().isBefore(dto.getEndTime())) {
+        if (!dto.getStartTime().isBefore(dto.getEndTime())) {
             throw new IllegalArgumentException("Start time must be before end time");
         }
 
@@ -50,6 +59,7 @@ public class BookingService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
         long conflicts = bookingRepository.countConflicts(
                 dto.getResourceId(),
                 dto.getBookingDate(),
@@ -59,8 +69,15 @@ public class BookingService {
         );
 
         if (conflicts > 0) {
+            log.info("Booking conflict for resource {} on {}; computing alternatives",
+                    resource.getName(), dto.getBookingDate());
+
+            List<BookingAlternativeDTO> alternatives =
+                    alternativeRecommendationService.findAlternatives(dto);
+
             throw new BookingConflictException(
-                    "The resource '" + resource.getName() + "' is already booked during the requested time range."
+                    "The resource '" + resource.getName() + "' is already booked during the requested time range.",
+                    alternatives
             );
         }
 
@@ -93,10 +110,20 @@ public class BookingService {
         booking.setAdminNote(dto.getNote());
         booking.setReviewedBy(admin);
 
-        return bookingRepository.save(booking);
+        Booking saved = bookingRepository.save(booking);
+
+        // Notify booking owner
+        notificationService.createNotification(
+            booking.getUser().getId(),
+            NotificationType.BOOKING_APPROVED,
+            "Booking Approved",
+            "Your booking for " + booking.getResource().getName() + " on " + booking.getBookingDate() + " has been approved.",
+            "/bookings"
+        );
+        return saved;
     }
 
-    public Booking rejectBooking(Long bookingId, RejectBookingDTO dto,  Long adminId) {
+    public Booking rejectBooking(Long bookingId, RejectBookingDTO dto, Long adminId) {
         Booking booking = findByIdOrThrow(bookingId);
 
         if (booking.getStatus() != BookingStatus.PENDING) {
@@ -112,20 +139,31 @@ public class BookingService {
         booking.setAdminNote(dto.getReason());
         booking.setReviewedBy(admin);
 
-        return bookingRepository.save(booking);
+        Booking saved = bookingRepository.save(booking);
+
+        // Notify booking owner
+        notificationService.createNotification(
+            booking.getUser().getId(),
+            NotificationType.BOOKING_REJECTED,
+            "Booking Rejected",
+            "Your booking for " + booking.getResource().getName() + " on " + booking.getBookingDate() + " was rejected."
+                + (dto.getReason() != null && !dto.getReason().isEmpty() ? " Reason: " + dto.getReason() : ""),
+            "/bookings"
+        );
+        return saved;
     }
 
     public Booking cancelBooking(Long bookingId, Long requestingUserId) {
         Booking booking = findByIdOrThrow(bookingId);
 
-        if (booking.getStatus() != BookingStatus.APPROVED) {
-            throw new InvalidStatusTransitionException(
-                    "Only APPROVED bookings can be cancelled. Current status: " + booking.getStatus()
-            );
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new InvalidStatusTransitionException("Booking is already cancelled.");
+        }
+        if (booking.getStatus() == BookingStatus.REJECTED) {
+            throw new InvalidStatusTransitionException("Rejected bookings cannot be cancelled.");
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
-
         return bookingRepository.save(booking);
     }
 

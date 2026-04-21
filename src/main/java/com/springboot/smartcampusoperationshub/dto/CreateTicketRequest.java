@@ -5,6 +5,7 @@ import com.springboot.smartcampusoperationshub.model.TicketPriority;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 
 public class CreateTicketRequest {
 
@@ -23,6 +24,8 @@ public class CreateTicketRequest {
 
     @NotBlank(message = "Preferred contact is required")
     private String preferredContact;
+
+    private List<String> attachmentUrls;
 
     public CreateTicketRequest() {
     }
@@ -66,4 +69,12 @@ public class CreateTicketRequest {
     public void setPreferredContact(String preferredContact) {
         this.preferredContact = preferredContact;
     }
-}
+
+    public List<String> getAttachmentUrls() {
+        return attachmentUrls;
+    }
+
+    public void setAttachmentUrls(List<String> attachmentUrls) {
+        this.attachmentUrls = attachmentUrls;
+    }
+}

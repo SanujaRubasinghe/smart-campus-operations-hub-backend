@@ -6,6 +6,8 @@ import com.springboot.smartcampusoperationshub.dto.UpdateTicketStatusRequest;
 import com.springboot.smartcampusoperationshub.exception.BadRequestException;
 import com.springboot.smartcampusoperationshub.exception.ResourceNotFoundException;
 import com.springboot.smartcampusoperationshub.model.IncidentTicket;
+import com.springboot.smartcampusoperationshub.model.enums.NotificationType;
+import com.springboot.smartcampusoperationshub.model.TicketAttachment;
 import com.springboot.smartcampusoperationshub.model.TicketStatus;
 import com.springboot.smartcampusoperationshub.repository.IncidentTicketRepository;
 import org.springframework.stereotype.Service;
@@ -17,12 +19,15 @@ import java.util.List;
 public class IncidentTicketService {
 
     private final IncidentTicketRepository incidentTicketRepository;
+    private final NotificationService notificationService;
 
-    public IncidentTicketService(IncidentTicketRepository incidentTicketRepository) {
+    public IncidentTicketService(IncidentTicketRepository incidentTicketRepository,
+                                  NotificationService notificationService) {
         this.incidentTicketRepository = incidentTicketRepository;
+        this.notificationService = notificationService;
     }
 
-    public IncidentTicket createTicket(CreateTicketRequest request) {
+    public IncidentTicket createTicket(CreateTicketRequest request, Long reportedByUserId) {
         IncidentTicket ticket = new IncidentTicket();
         ticket.setCategory(request.getCategory());
         ticket.setLocation(request.getLocation());
@@ -30,10 +35,37 @@ public class IncidentTicketService {
         ticket.setPriority(request.getPriority());
         ticket.setPreferredContact(request.getPreferredContact());
         ticket.setStatus(TicketStatus.OPEN);
+        ticket.setReportedByUserId(reportedByUserId);
+        IncidentTicket saved = incidentTicketRepository.save(ticket);
 
-        return incidentTicketRepository.save(ticket);
+        // Save Supabase attachment URLs as TicketAttachment records
+        if (request.getAttachmentUrls() != null) {
+            for (String url : request.getAttachmentUrls()) {
+                String fileName = url.substring(url.lastIndexOf('/') + 1);
+                String[] parts = fileName.split("\\.");
+                String ext = parts.length > 1 ? parts[parts.length - 1].toLowerCase() : "file";
+                String mime = ext.equals("png") ? "image/png" :
+                              ext.equals("jpg") || ext.equals("jpeg") ? "image/jpeg" :
+                              ext.equals("webp") ? "image/webp" : "image/" + ext;
+                TicketAttachment att = new TicketAttachment();
+                att.setFileName(fileName);
+                att.setFileType(mime);
+                att.setFilePath(url);
+                att.setTicket(saved);
+                saved.getAttachments().add(att);
+            }
+            incidentTicketRepository.save(saved);
+        }
+        return saved;
     }
 
+    public List<IncidentTicket> getTickets(boolean isAdmin, Long userId) {
+        if (isAdmin) return incidentTicketRepository.findAll();
+        if (userId == null) return List.of();
+        return incidentTicketRepository.findByReportedByUserId(userId);
+    }
+
+    /** @deprecated kept for backward compatibility with admin service */
     public List<IncidentTicket> getAllTickets() {
         return incidentTicketRepository.findAll();
     }
@@ -76,7 +108,25 @@ public class IncidentTicketService {
         }
 
         ticket.setStatus(request.getStatus());
-        return incidentTicketRepository.save(ticket);
+        IncidentTicket saved = incidentTicketRepository.save(ticket);
+
+        // Notify the ticket owner about status change
+        if (saved.getReportedByUserId() != null) {
+            NotificationType notifType = switch (request.getStatus()) {
+                case RESOLVED -> NotificationType.TICKET_RESOLVED;
+                case CLOSED   -> NotificationType.TICKET_CLOSED;
+                default       -> NotificationType.TICKET_UPDATED;
+            };
+            String statusLabel = request.getStatus().name().replace("_", " ");
+            notificationService.createNotification(
+                saved.getReportedByUserId(),
+                notifType,
+                "Ticket #" + saved.getId() + " " + statusLabel,
+                "Your ticket has been updated to " + statusLabel + ".",
+                "/tickets"
+            );
+        }
+        return saved;
     }
 
     public IncidentTicket updateTicketDetails(Long id, UpdateTicketDetailsRequest request) {
