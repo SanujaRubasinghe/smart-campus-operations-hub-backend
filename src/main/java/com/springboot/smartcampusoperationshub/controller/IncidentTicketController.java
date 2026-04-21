@@ -7,43 +7,44 @@ import com.springboot.smartcampusoperationshub.dto.UpdateTicketStatusRequest;
 import com.springboot.smartcampusoperationshub.model.IncidentTicket;
 import com.springboot.smartcampusoperationshub.security.UserPrincipal;
 import com.springboot.smartcampusoperationshub.service.IncidentTicketService;
+import com.springboot.smartcampusoperationshub.service.TicketPdfService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tickets")
+//@PreAuthorize("hasRole('ADMIN')")
 public class IncidentTicketController {
 
     private final IncidentTicketService incidentTicketService;
+    private final TicketPdfService ticketPdfService;
 
-    public IncidentTicketController(IncidentTicketService incidentTicketService) {
+    public IncidentTicketController(IncidentTicketService incidentTicketService,
+                                    TicketPdfService ticketPdfService) {
         this.incidentTicketService = incidentTicketService;
+        this.ticketPdfService = ticketPdfService;
     }
 
     @PostMapping
     public ResponseEntity<IncidentTicket> createTicket(
             @Valid @RequestBody CreateTicketRequest request,
-            Authentication authentication) {
-        Long userId = authentication != null && authentication.getPrincipal() instanceof UserPrincipal
-                ? ((UserPrincipal) authentication.getPrincipal()).getId() : null;
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(incidentTicketService.createTicket(request, userId));
+                .body(incidentTicketService.createTicket(request, userPrincipal.getId()));
     }
 
     @GetMapping
-    public ResponseEntity<List<IncidentTicket>> getAllTickets(Authentication authentication) {
-        boolean isAdmin = authentication != null &&
-                authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        Long userId = authentication != null && authentication.getPrincipal() instanceof UserPrincipal
-                ? ((UserPrincipal) authentication.getPrincipal()).getId() : null;
-        return ResponseEntity.ok(incidentTicketService.getTickets(isAdmin, userId));
+    public ResponseEntity<List<IncidentTicket>> getAllTickets() {
+        return ResponseEntity.ok(incidentTicketService.getAllTickets());
     }
 
     @GetMapping("/{id}")
@@ -51,7 +52,6 @@ public class IncidentTicketController {
         return ResponseEntity.ok(incidentTicketService.getTicketById(id));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/assign")
     public ResponseEntity<IncidentTicket> assignTechnician(
             @PathVariable Long id,
@@ -59,7 +59,6 @@ public class IncidentTicketController {
         return ResponseEntity.ok(incidentTicketService.assignTechnician(id, request));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<IncidentTicket> updateStatus(
             @PathVariable Long id,
@@ -67,7 +66,6 @@ public class IncidentTicketController {
         return ResponseEntity.ok(incidentTicketService.updateStatus(id, request));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
         incidentTicketService.deleteTicket(id);
@@ -80,5 +78,16 @@ public class IncidentTicketController {
             @RequestBody UpdateTicketDetailsRequest request) {
 
         return ResponseEntity.ok(incidentTicketService.updateTicketDetails(id, request));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> downloadTicketPdf(@PathVariable Long id) {
+        byte[] pdfBytes = ticketPdfService.generateTicketPdf(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ticket-" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
 }
