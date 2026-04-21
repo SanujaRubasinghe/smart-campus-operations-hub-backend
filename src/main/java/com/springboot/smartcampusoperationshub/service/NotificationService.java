@@ -24,6 +24,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationPreferencesRepository preferencesRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
 
@@ -45,7 +46,7 @@ public class NotificationService {
     }
 
     /**
-     * Creates and persists a notification for the given userId.
+     * Creates and persists a notification for the given userId, and sends an email.
      */
     @Transactional
     public void createNotification(Long userId, NotificationType type, String title, String message, String link) {
@@ -59,6 +60,12 @@ public class NotificationService {
             n.setRead(false);
             n.setDeleted(false);
             notificationRepository.save(n);
+            
+            // Send email notification dynamically in the real world
+            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                String emailText = "You have a new Notification: " + title + "\n\n" + message + "\n\nLink: " + link;
+                emailService.sendEmail(user.getEmail(), title, emailText);
+            }
         });
     }
 }
