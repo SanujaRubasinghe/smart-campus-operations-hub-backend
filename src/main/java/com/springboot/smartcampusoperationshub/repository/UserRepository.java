@@ -22,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT COUNT(u) > 0 FROM User u WHERE u.role = 'ADMIN'")
     boolean hasAnyAdmin();
+
+    java.util.List<User> findAllByRoleAndEnabled(com.springboot.smartcampusoperationshub.model.enums.Role role, boolean enabled);
 }

@@ -91,7 +91,18 @@ public class BookingService {
         booking.setExpectedAttendees(dto.getExpectedAttendees());
         booking.setStatus(BookingStatus.PENDING);
 
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        // Notify booking owner
+        notificationService.createNotification(
+            savedBooking.getUser().getId(),
+            NotificationType.BOOKING_REQUEST,
+            "Booking Requested",
+            "Your booking for " + resource.getName() + " on " + dto.getBookingDate() + " has been received and is pending approval.",
+            "/bookings"
+        );
+
+        return savedBooking;
     }
 
     public Booking approveBooking(Long bookingId, ApproveBookingDTO dto,  Long adminId) {

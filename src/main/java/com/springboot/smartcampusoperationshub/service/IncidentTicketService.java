@@ -156,9 +156,21 @@ public class IncidentTicketService {
         return incidentTicketRepository.save(ticket);
     }
 
-    public void deleteTicket(Long id) {
+//    public void deleteTicket(Long id) {
+//        IncidentTicket ticket = incidentTicketRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with id: " + id));
+//
+//        incidentTicketRepository.delete(ticket);
+//    }
+
+    public void deleteTicket(Long id, Long currentUserId, boolean isAdmin) {
         IncidentTicket ticket = incidentTicketRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with id: " + id));
+
+        // If NOT admin and NOT owner → block
+        if (!isAdmin && !ticket.getReportedByUserId().equals(currentUserId)) {
+            throw new BadRequestException("You can only delete your own tickets");
+        }
 
         incidentTicketRepository.delete(ticket);
     }
