@@ -11,6 +11,7 @@ import com.springboot.smartcampusoperationshub.repository.IncidentTicketReposito
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 @Service
 public class TicketPdfService {
@@ -21,9 +22,8 @@ public class TicketPdfService {
         this.incidentTicketRepository = incidentTicketRepository;
     }
 
-    public byte[] generateTicketPdf(Long ticketId) {
-        IncidentTicket ticket = incidentTicketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found with id: " + ticketId));
+    public byte[] generateAllTicketsPdf() {
+        List<IncidentTicket> tickets = incidentTicketRepository.findAll();
 
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -32,28 +32,29 @@ public class TicketPdfService {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-            Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 11);
-
-            document.add(new Paragraph("Incident Ticket Report", titleFont));
+            document.add(new Paragraph("All Incident Tickets Report"));
             document.add(new Paragraph(" "));
 
-            document.add(new Paragraph("Ticket ID: " + ticket.getId(), normalFont));
-            document.add(new Paragraph("Description: " + safe(ticket.getDescription()), normalFont));
-            document.add(new Paragraph("Category: " + value(ticket.getCategory()), normalFont));
-            document.add(new Paragraph("Priority: " + value(ticket.getPriority()), normalFont));
-            document.add(new Paragraph("Status: " + value(ticket.getStatus()), normalFont));
-            document.add(new Paragraph("Location: " + safe(ticket.getLocation()), normalFont));
-            document.add(new Paragraph("Preferred Contact: " + safe(ticket.getPreferredContact()), normalFont));
-            document.add(new Paragraph("Assigned Technician: " + safe(ticket.getAssignedTechnicianName()), normalFont));
-            document.add(new Paragraph("Resolution Notes: " + safe(ticket.getResolutionNotes()), normalFont));
-            document.add(new Paragraph("Rejection Reason: " + safe(ticket.getRejectionReason()), normalFont));
+            for (IncidentTicket ticket : tickets) {
+                document.add(new Paragraph("Ticket ID: " + ticket.getId()));
+                document.add(new Paragraph("Description: " + safe(ticket.getDescription())));
+                document.add(new Paragraph("Category: " + value(ticket.getCategory())));
+                document.add(new Paragraph("Priority: " + value(ticket.getPriority())));
+                document.add(new Paragraph("Status: " + value(ticket.getStatus())));
+                document.add(new Paragraph("Location: " + safe(ticket.getLocation())));
+                document.add(new Paragraph("Preferred Contact: " + safe(ticket.getPreferredContact())));
+                document.add(new Paragraph("Assigned Technician: " + safe(ticket.getAssignedTechnicianName())));
+                document.add(new Paragraph("Resolution Notes: " + safe(ticket.getResolutionNotes())));
+                document.add(new Paragraph("Rejection Reason: " + safe(ticket.getRejectionReason())));
+                document.add(new Paragraph("--------------------------------------------------"));
+                document.add(new Paragraph(" "));
+            }
 
             document.close();
             return out.toByteArray();
 
         } catch (DocumentException e) {
-            throw new RuntimeException("Error while generating PDF: " + e.getMessage());
+            throw new RuntimeException("Error while generating all tickets PDF" + e.getMessage());
         }
     }
 
