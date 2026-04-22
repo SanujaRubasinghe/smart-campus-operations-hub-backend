@@ -9,11 +9,15 @@ import com.springboot.smartcampusoperationshub.model.TicketComment;
 import com.springboot.smartcampusoperationshub.model.UserRole;
 import com.springboot.smartcampusoperationshub.model.enums.NotificationType;
 import com.springboot.smartcampusoperationshub.repository.TicketCommentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TicketCommentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TicketCommentService.class);
 
     private final TicketCommentRepository ticketCommentRepository;
     private final IncidentTicketService incidentTicketService;
@@ -29,30 +33,35 @@ public class TicketCommentService {
 
     @Transactional
     public TicketComment addComment(Long ticketId, AddCommentRequest request) {
-        IncidentTicket ticket = incidentTicketService.getTicketById(ticketId);
+        try {
+            IncidentTicket ticket = incidentTicketService.getTicketById(ticketId);
 
-        TicketComment comment = new TicketComment();
-        comment.setCommentText(request.getCommentText());
-        comment.setCommenterName(request.getCommenterName());
-        comment.setCommenterRole(request.getCommenterRole());
-        comment.setTicket(ticket);
+            TicketComment comment = new TicketComment();
+            comment.setCommentText(request.getCommentText());
+            comment.setCommenterName(request.getCommenterName());
+            comment.setCommenterRole(request.getCommenterRole() != null ? request.getCommenterRole() : UserRole.STUDENT);
+            comment.setTicket(ticket);
 
-        TicketComment saved = ticketCommentRepository.save(comment);
+            TicketComment saved = ticketCommentRepository.save(comment);
 
-        // Notify the ticket owner when Admin replies
-        boolean isAdminReply = "Admin".equalsIgnoreCase(request.getCommenterName())
-                || request.getCommenterRole() == UserRole.ADMIN;
-        if (isAdminReply && ticket.getReportedByUserId() != null) {
-            notificationService.createNotification(
-                ticket.getReportedByUserId(),
-                NotificationType.COMMENT_ADDED,
-                "Admin replied to your ticket",
-                "Your ticket #" + ticket.getId() + " (" + ticket.getCategory() + ") received a reply: "
-                    + request.getCommentText(),
-                "/tickets"
-            );
+            // Notify the ticket owner when Admin replies
+            boolean isAdminReply = "Admin".equalsIgnoreCase(request.getCommenterName())
+                    || request.getCommenterRole() == UserRole.ADMIN;
+            if (isAdminReply && ticket.getReportedByUserId() != null) {
+                notificationService.createNotification(
+                    ticket.getReportedByUserId(),
+                    NotificationType.COMMENT_ADDED,
+                    "Admin replied to your ticket",
+                    "Your ticket #" + ticket.getId() + " (" + ticket.getCategory() + ") received a reply: "
+                        + request.getCommentText(),
+                    "/tickets"
+                );
+            }
+            return saved;
+        } catch (Exception e) {
+            logger.error("Failed to add comment to ticket {}: {}", ticketId, e.getMessage(), e);
+            throw e;
         }
-        return saved;
     }
 
     @Transactional
