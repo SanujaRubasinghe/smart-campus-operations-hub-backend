@@ -2,6 +2,7 @@ package com.springboot.smartcampusoperationshub.controller;
 
 import com.springboot.smartcampusoperationshub.dto.NotificationModel;
 import com.springboot.smartcampusoperationshub.model.Notification;
+import com.springboot.smartcampusoperationshub.model.enums.NotificationType;
 import com.springboot.smartcampusoperationshub.security.UserPrincipal;
 import com.springboot.smartcampusoperationshub.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +33,32 @@ public class NotificationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<NotificationModel> getNotificationById(@PathVariable Long id) {
-        return ResponseEntity.notFound().build();
+
+        Notification notification = notificationService.getNotificationById(id)
+                .orElseThrow(() -> new RuntimeException("notification id not found!!"));
+
+        NotificationModel notificationModel = new NotificationModel();
+
+        return ResponseEntity.ok(new NotificationModelAssembler().toModel(notification));
     }
 
     @GetMapping("/unread-count")
     public ResponseEntity<Long> getUnreadCount(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         return ResponseEntity.ok(notificationService.getUnreadCount(userPrincipal.getId()));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createTestNotification() {
+
+        notificationService.createNotification(
+                16L,
+                NotificationType.BOOKING_REQUEST,
+                "Test Notification",
+                "This notification was created using Postman test.",
+                "/bookings"
+        );
+
+        return ResponseEntity.ok("Notification Created Successfully");
     }
 
     @PatchMapping("/{id}/read")

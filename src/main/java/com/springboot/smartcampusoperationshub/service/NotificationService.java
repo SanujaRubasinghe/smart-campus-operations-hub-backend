@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -45,6 +46,9 @@ public class NotificationService {
         return notificationRepository.countByUserIdAndIsReadFalseAndIsDeletedFalse(userId);
     }
 
+    public Optional<Notification> getNotificationById(Long id) {
+        return notificationRepository.getNotificationById(id);
+    }
     /**
      * Creates and persists a notification for the given userId, and sends an email.
      */
@@ -63,8 +67,19 @@ public class NotificationService {
             
             // Send email notification dynamically in the real world
             if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-                String emailText = "You have a new Notification: " + title + "\n\n" + message + "\n\nLink: " + link;
-                emailService.sendEmail(user.getEmail(), title, emailText);
+                java.util.Map<String, Object> emailVariables = new java.util.HashMap<>();
+                emailVariables.put("title", title);
+                emailVariables.put("message", message);
+                
+                // If there's a specific link, like a frontend URL, it can be passed here
+                // For now we just use the relative link if it's available, though a full URL would be better
+                if (link != null && !link.isEmpty()) {
+                    emailVariables.put("link", "http://localhost:5173" + link); // Assuming default local frontend URL
+                } else {
+                    emailVariables.put("link", null);
+                }
+                
+                emailService.sendHtmlEmail(user.getEmail(), title, "notification-email", emailVariables);
             }
         });
     }

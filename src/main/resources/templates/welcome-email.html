@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Smart Campus</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+      margin: -20px -20px 20px -20px;
+    }
+    .content {
+      padding: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    .footer {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+    }
+    .info-box {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-left: 4px solid #4CAF50;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🏫 Smart Campus Operations Hub</h1>
+  </div>
+
+  <div class="content">
+    <h2>Hello, <span th:text="${name}">Student</span>!</h2>
+
+    <p>Welcome to the <strong>Smart Campus Operations Hub</strong>. We're excited to have you on board!</p>
+
+    <div class="info-box">
+      <h3>📋 Account Details:</h3>
+      <p><strong>Email:</strong> <span th:text="${email}">user@example.com</span></p>
+      <p><strong>Role:</strong> <span th:text="${role}">Student</span></p>
+      <p><strong>Department:</strong> <span th:text="${department}">Computer Science</span></p>
+    </div>
+
+    <p>Here's what you can do with your account:</p>
+    <ul>
+      <li>✅ View your class schedule</li>
+      <li>✅ Submit assignments online</li>
+      <li>✅ Check exam results</li>
+      <li>✅ Receive real-time campus notifications</li>
+      <li>✅ Access library resources</li>
+    </ul>
+
+    <div style="text-align: center;">
+      <a href="https://your-campus-portal.com/dashboard" class="button">
+        Go to Dashboard →
+      </a>
+    </div>
+
+    <p>If you have any questions, please don't hesitate to contact our support team.</p>
+
+    <p>Best regards,<br>
+      <strong>Smart Campus Team</strong></p>
+  </div>
+
+  <div class="footer">
+    <p>© 2024 Smart Campus Operations Hub | All rights reserved</p>
+    <p>This is an automated message, please do not reply directly to this email.</p>
+  </div>
+</div>
+</body>
+</html>
